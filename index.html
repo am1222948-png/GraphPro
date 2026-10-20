@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10182d">
+<title>GraphPro Calculator</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1120;color:#f1f5f9;font-family:Arial,sans-serif}
+header{text-align:center;padding:22px 12px}
+header h1{margin:0;color:#60a5fa;font-size:29px}
+header p{color:#a8b5ca;margin:8px 0 0;font-size:14px}
+main{max-width:490px;margin:auto;padding:12px}
+.calculator{background:#151f33;padding:16px;border-radius:20px;border:1px solid #293751;box-shadow:0 15px 40px #0003}
+.mode{display:flex;gap:8px;margin-bottom:12px}
+.mode button{flex:1;background:#263550;color:#dbeafe}
+.mode button.active{background:#2563eb;color:white}
+#display{width:100%;height:76px;border:0;border-radius:12px;background:#08101f;color:#fff;font-size:29px;text-align:right;padding:15px;outline:none}
+#preview{height:27px;text-align:right;padding:7px 4px;color:#60a5fa;font-size:14px;overflow:hidden}
+.keys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+button{border:0;border-radius:10px;min-height:49px;font-size:16px;font-weight:600;background:#263550;color:#f1f5f9;cursor:pointer}
+button:active{filter:brightness(1.25);transform:scale(.97)}
+button.fn{background:#1c4261;color:#93c5fd}
+button.op{background:#33415b}
+button.clear{background:#7f2636}
+button.equal{background:#2563eb;color:white}
+button:focus-visible{outline:2px solid #93c5fd;outline-offset:2px}
+.extra{margin-top:20px;background:#151f33;padding:16px;border-radius:16px}
+.extra h2{font-size:18px;margin:0 0 10px}
+#history{color:#cbd5e1;font-size:14px;overflow-wrap:anywhere}
+.history-row{padding:9px 0;border-bottom:1px solid #293751}
+footer{text-align:center;color:#8291aa;padding:25px;font-size:12px}
+@media(max-width:360px){main{padding:7px}.calculator{padding:10px}.keys{gap:6px}button{font-size:14px;min-height:45px}#display{font-size:24px}}
+</style>
+</head>
+<body>
+<header>
+<h1>GraphPro</h1>
+<p>Free Scientific Calculator</p>
+</header>
+<main>
+<section class="calculator">
+<div class="mode">
+<button id="deg" class="active" onclick="setAngle('DEG')">DEG</button>
+<button id="rad" onclick="setAngle('RAD')">RAD</button>
+</div>
+<input id="display" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-label="Calculator display">
+<div id="preview" aria-live="polite">Ready to calculate</div>
+<div class="keys">
+<button class="clear" onclick="clearAll()">AC</button>
+<button class="op" onclick="del()">DEL</button>
+<button class="fn" onclick="insert('(')">(</button>
+<button class="fn" onclick="insert(')')">)</button>
+<button class="op" onclick="insert('÷')">÷</button>
+
+<button class="fn" onclick="func('sin')">sin</button>
+<button class="fn" onclick="func('cos')">cos</button>
+<button class="fn" onclick="func('tan')">tan</button>
+<button class="fn" onclick="insert('π')">π</button>
+<button class="op" onclick="insert('×')">×</button>
+
+<button class="fn" onclick="func('sqrt')">√</button>
+<button class="fn" onclick="square()">x²</button>
+<button class="fn" onclick="insert('^')">xʸ</button>
+<button class="fn" onclick="func('log')">log</button>
+<button class="op" onclick="insert('−')">−</button>
+
+<button class="fn" onclick="func('ln')">ln</button>
+<button class="fn" onclick="insert('!')">n!</button>
+<button onclick="insert('7')">7</button>
+<button onclick="insert('8')">8</button>
+<button onclick="insert('9')">9</button>
+
+<button class="fn" onclick="insert('Ans')">Ans</button>
+<button onclick="insert('4')">4</button>
+<button onclick="insert('5')">5</button>
+<button onclick="insert('6')">6</button>
+<button class="op" onclick="insert('+')">+</button>
+
+<button class="fn" onclick="insert('%')">%</button>
+<button onclick="insert('1')">1</button>
+<button onclick="insert('2')">2</button>
+<button onclick="insert('3')">3</button>
+<button class="equal" onclick="calculate()" style="grid-row:span 2;min-height:104px">=</button>
+
+<button class="fn" onclick="insert('±')">±</button>
+<button onclick="insert('0')">0</button>
+<button onclick="insert('.')">.</button>
+<button class="fn" onclick="insert('×10^(')">EXP</button>
+</div>
+</section>
+<section class="extra">
+<h2>Calculation History</h2>
+<div id="history">Your recent calculations will appear here.</div>
+</section>
+</main>
+<footer>GraphPro Calculator · Free maths tool</footer>
+<script>
+const display=document.getElementById('display');
+const preview=document.getElementById('preview');
+const historyBox=document.getElementById('history');
+let angleMode='DEG',answer=0,history=[];
+
+function setAngle(mode){
+ angleMode=mode;
+ document.getElementById('deg').classList.toggle('active',mode==='DEG');
+ document.getElementById('rad').classList.toggle('active',mode==='RAD');
+ preview.textContent='Angle mode: '+mode;
+}
+function insert(value){
+ const start=display.selectionStart??display.value.length;
+ const end=display.selectionEnd??display.value.length;
+ display.setRangeText(value,start,end,'end');
+ display.focus();
+ updatePreview();
+}
+function func(name){insert(name+'(')}
+function square(){insert('^2')}
+function clearAll(){display.value='';preview.textContent='Ready to calculate';display.focus()}
+function del(){
+ const start=display.selectionStart??display.value.length;
+ const end=display.selectionEnd??display.value.length;
+ if(start===end&&start>0)display.setRangeText('',start-1,start,'end');
+ else display.setRangeText('',start,end,'end');
+ updatePreview();
+}
+function tokenize(s){
+ const tokens=[];
+ let i=0;
+ while(i<s.length){
+  if(/\s/.test(s[i])){i++;continue}
+  const num=s.slice(i).match(/^(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?/i);
+  if(num){tokens.push({type:'num',v:Number(num[0])});i+=num[0].length;continue}
+  const id=s.slice(i).match(/^[A-Za-z]+/);
+  if(id){
+   const word=id[0].toLowerCase();
+   if(word==='pi')tokens.push({type:'num',v:Math.PI});
+   else if(word==='ans')tokens.push({type:'num',v:answer});
+   else if(['sin','cos','tan','sqrt','log','ln'].includes(word))tokens.push({type:'fn',v:word});
+   else throw Error('Unknown name: '+id[0]);
+   i+=id[0].length;continue;
+  }
+  if('+-−×÷*/^()%!'.includes(s[i])){
+   tokens.push({type:'op',v:s[i]});i++;continue;
+  }
+  throw Error('Invalid character');
+ }
+ const out=[];
+ for(let j=0;j<tokens.length;j++){
+  const a=tokens[j],b=out[out.length-1];
+  const left=b&&(b.type==='num'||b.type==='close'||b.v===')'||b.v==='!');
+  const right=a&&(a.type==='num'||a.type==='fn'||a.v==='('||a.v==='π');
+  if(left&&right)out.push({type:'op',v:'*'});
+  out.push(a);
+ }
+ return out;
+}
+function parse(s){
+ s=s.replace(/π/g,'pi').replace(/÷/g,'/').replace(/×/g,'*').replace(/−/g,'-').replace(/±/g,'-');
+ const t=tokenize(s);let p=0;
+ function expr(min=0){
+  let tok=t[p++],v;
+  if(!tok)throw Error('Incomplete expression');
+  if(tok.type==='num')v=tok.v;
+  else if(tok.type==='fn'){
+   if(!t[p]||t[p].v!=='(')throw Error('Use '+tok.v+'(value)');
+   p++;v=expr(0);
+   if(!t[p]||t[p++].v!==')')throw Error('Missing )');
+   v=applyFn(tok.v,v);
+  }else if(tok.v==='('){
+   v=expr(0);
+   if(!t[p]||t[p++].v!==')')throw Error('Missing )');
+  }else if(tok.v==='+'||tok.v==='-'||tok.v==='−'){
+   v=expr(25);if(tok.v!=='+' )v=-v;
+  }else throw Error('Check expression');
+  while(p<t.length){
+   const op=t[p].v;
+   const prec={'+':10,'-':10,'−':10,'*':20,'/':20,'×':20,'÷':20,'%':20,'^':30,'!':40}[op]||0;
+   if(prec<=min)break;
+   p++;
+   if(op==='!'){v=factorial(v);continue}
+   if(op==='%'){v/=100;continue}
+   const right=expr(op==='^'?prec-1:prec);
+   if(op==='+')v+=right;
+   else if(op==='-'||op==='−')v-=right;
+   else if(op==='*'||op==='×')v*=right;
+   else if(op==='/'||op==='÷')v/=right;
+   else if(op==='^')v=Math.pow(v,right);
+  }
+  return v;
+ }
+ const result=expr();
+ if(p<t.length)throw Error('Check expression');
+ if(!Number.isFinite(result))throw Error('Result is undefined');
+ return result;
+}
+function applyFn(name,x){
+ const a=angleMode==='DEG'?x*Math.PI/180:x;
+ if(name==='sin')return Math.sin(a);
+ if(name==='cos')return Math.cos(a);
+ if(name==='tan'){
+  if(Math.abs(Math.cos(a))<1e-12)throw Error('Tangent undefined');
+  return Math.tan(a);
+ }
+ if(name==='sqrt'){if(x<0)throw Error('Square root needs a non-negative number');return Math.sqrt(x)}
+ if(name==='log'){if(x<=0)throw Error('log needs a positive number');return Math.log10(x)}
+ if(name==='ln'){if(x<=0)throw Error('ln needs a positive number');return Math.log(x)}
+}
+function factorial(x){
+ if(!Number.isInteger(x)||x<0||x>170)throw Error('Factorial needs an integer from 0 to 170');
+ let n=1;for(let i=2;i<=x;i++)n*=i;return n;
+}
+function format(x){return Number(x.toPrecision(12)).toString()}
+function calculate(){
+ try{
+  const raw=display.value;
+  if(!raw.trim())return;
+  const result=parse(raw);
+  answer=result;
+  const pretty=format(result);
+  preview.textContent='= '+pretty;
+  history.unshift(raw+' = '+pretty);
+  history=history.slice(0,8);
+  historyBox.innerHTML='';
+  history.forEach(item=>{
+   const row=document.createElement('div');
+   row.className='history-row';
+   row.textContent=item;
+   historyBox.appendChild(row);
+  });
+  display.value=pretty;
+ }catch(e){preview.textContent=e.message||'Invalid expression'}
+}
+function updatePreview(){
+ try{
+  if(!display.value.trim()){preview.textContent='Ready to calculate';return}
+  preview.textContent='Press = to calculate';
+ }catch(e){preview.textContent=''}
+}
+display.addEventListener('input',updatePreview);
+display.addEventListener('keydown',e=>{
+ if(e.key==='Enter'){e.preventDefault();calculate()}
+ if(e.key==='Escape')clearAll();
+});
+</script>
+</body>
+  </html>
