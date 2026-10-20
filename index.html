@@ -202,6 +202,63 @@ Enter a function in the Graph section first.
     </table>
   </div>
 </section>
+ 
+<section class="extra" id="equationSolverSection">
+  <h2>🧮 Equation Solver</h2>
+  <p style="color:#a8b5ca;font-size:14px">
+    Enter a linear equation, for example 2*x+5=15.
+  </p>
+
+  <input
+    id="equationInput"
+    type="text"
+    inputmode="none"
+    autocomplete="off"
+    placeholder="Example: 2*x+5=15"
+    style="width:100%;padding:13px;box-sizing:border-box;
+    border-radius:9px;border:1px solid #33415b;
+    background:#08101f;color:white;font-size:16px"
+  >
+
+  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px">
+    <button type="button" onclick="equationKey('x')">x</button>
+    <button type="button" onclick="equationKey('1')">1</button>
+    <button type="button" onclick="equationKey('2')">2</button>
+    <button type="button" onclick="equationKey('+')">+</button>
+    <button type="button" onclick="equationKey('3')">3</button>
+    <button type="button" onclick="equationKey('4')">4</button>
+    <button type="button" onclick="equationKey('5')">5</button>
+    <button type="button" onclick="equationKey('-')">−</button>
+    <button type="button" onclick="equationKey('6')">6</button>
+    <button type="button" onclick="equationKey('7')">7</button>
+    <button type="button" onclick="equationKey('8')">8</button>
+    <button type="button" onclick="equationKey('*')">×</button>
+    <button type="button" onclick="equationKey('9')">9</button>
+    <button type="button" onclick="equationKey('0')">0</button>
+    <button type="button" onclick="equationKey('=')">=</button>
+    <button type="button" onclick="equationKey('/')">÷</button>
+    <button type="button" onclick="equationKey('.')">.</button>
+    <button type="button" onclick="equationKey('(')">(</button>
+    <button type="button" onclick="equationKey(')')">)</button>
+    <button type="button" onclick="equationKey('backspace')">⌫</button>
+  </div>
+
+  <button type="button" onclick="equationKey('clear')"
+    style="width:100%;margin-top:8px;background:#475569;color:white">
+    Clear
+  </button>
+
+  <button type="button" onclick="solveEquation()"
+    style="width:100%;margin-top:8px;background:#2563eb;color:white">
+    Solve Equation
+  </button>
+
+  <div id="equationResult"
+    style="margin-top:12px;padding:12px;border-radius:9px;
+    background:#08101f;color:#e2e8f0">
+    Your solution will appear here.
+  </div>
+</section>
 <section class="extra">
 <h2>Calculation History</h2>
 <div id="history">Your recent calculations will appear here.</div>
@@ -592,6 +649,183 @@ function generateXYTable() {
 
   status.textContent = "Showing 21 calculated values.";
 }
+ 
+function equationKey(value) {
+  const input = document.getElementById("equationInput");
+  const result = document.getElementById("equationResult");
+
+  if (!input) return;
+
+  if (value === "clear") {
+    input.value = "";
+    result.textContent = "Your solution will appear here.";
+  } else if (value === "backspace") {
+    input.value = input.value.slice(0, -1);
+  } else {
+    input.value += value;
+  }
+}
+
+function solveEquation() {
+  const input = document.getElementById("equationInput");
+  const result = document.getElementById("equationResult");
+  const equation = input.value.replace(/\s+/g, "");
+
+  if (!equation) {
+    result.textContent = "Please enter an equation first.";
+    return;
+  }
+
+  const sides = equation.split("=");
+
+  if (sides.length !== 2 || !sides[0] || !sides[1]) {
+    result.textContent = "Enter one equation using =, for example 2*x+5=15.";
+    return;
+  }
+
+  function parseLinear(expression) {
+    const tokens = expression.match(
+      /(?:\d+(?:\.\d*)?|\.\d+)|x|[+\-*/()]/gi
+    );
+
+    if (!tokens || tokens.join("") !== expression) {
+      throw new Error("Invalid characters in equation.");
+    }
+
+    let pos = 0;
+
+    function add(p, q) {
+      return { a: p.a + q.a, b: p.b + q.b };
+    }
+
+    function subtract(p, q) {
+      return { a: p.a - q.a, b: p.b - q.b };
+    }
+
+    function multiply(p, q) {
+      if (p.a !== 0 && q.a !== 0) {
+        throw new Error("Nonlinear equations are not supported yet.");
+      }
+
+      return {
+        a: p.a * q.b + q.a * p.b,
+        b: p.b * q.b
+      };
+    }
+
+    function divide(p, q) {
+      if (q.a !== 0) {
+        throw new Error("Cannot divide by an expression containing x.");
+      }
+
+      if (q.b === 0) {
+        throw new Error("Division by zero is not allowed.");
+      }
+
+      return { a: p.a / q.b, b: p.b / q.b };
+    }
+
+    function primary() {
+      const token = tokens[pos++];
+
+      if (token === undefined) {
+        throw new Error("Incomplete expression.");
+      }
+
+      if (token === "+") return primary();
+
+      if (token === "-") {
+        const value = primary();
+        return { a: -value.a, b: -value.b };
+      }
+
+      if (token === "(") {
+        const value = expressionValue();
+
+        if (tokens[pos++] !== ")") {
+          throw new Error("Please check your brackets.");
+        }
+
+        return value;
+      }
+
+      if (token.toLowerCase() === "x") {
+        return { a: 1, b: 0 };
+      }
+
+      if (!Number.isFinite(Number(token))) {
+        throw new Error("Invalid number.");
+      }
+
+      return { a: 0, b: Number(token) };
+    }
+
+    function term() {
+      let value = primary();
+
+      while (pos < tokens.length) {
+        const op = tokens[pos];
+
+        if (op !== "*" && op !== "/") break;
+        pos++;
+
+        const right = primary();
+        value = op === "*" ? multiply(value, right) : divide(value, right);
+      }
+
+      return value;
+    }
+
+    function expressionValue() {
+      let value = term();
+
+      while (pos < tokens.length) {
+        const op = tokens[pos];
+
+        if (op !== "+" && op !== "-") break;
+        pos++;
+
+        const right = term();
+        value = op === "+" ? add(value, right) : subtract(value, right);
+      }
+
+      return value;
+    }
+
+    const answer = expressionValue();
+
+    if (pos !== tokens.length) {
+      throw new Error("Please check the equation format.");
+    }
+
+    return answer;
+  }
+
+  try {
+    const left = parseLinear(sides[0]);
+    const right = parseLinear(sides[1]);
+
+    const coefficient = left.a - right.a;
+    const constant = right.b - left.b;
+
+    if (Math.abs(coefficient) < 1e-12) {
+      if (Math.abs(constant) < 1e-12) {
+        result.textContent = "Infinite solutions: both sides are equal.";
+      } else {
+        result.textContent = "No solution: the equation cannot be satisfied.";
+      }
+      return;
+    }
+
+    const x = constant / coefficient;
+    const answer = Number(x.toPrecision(10));
+
+    result.textContent = "Solution: x = " + answer;
+  } catch (error) {
+    result.textContent =
+      error.message || "Unable to solve this equation. Please check your input.";
+  }
+                                 }
 </script>
 </body>
   </html>
