@@ -388,7 +388,7 @@ display.addEventListener('keydown',e=>{
     status.textContent = "Invalid expression. Try x^2 or 2*x+3.";
     return;
   }
-
+window.graphTableEvaluate = null;
   function evaluate(x) {
     let pos = 0;
 
@@ -454,6 +454,7 @@ display.addEventListener('keydown',e=>{
     return result;
   }
 
+  window.graphTableEvaluate = evaluate;
   const W = canvas.width;
   const H = canvas.height;
   const scale = 35;
@@ -528,6 +529,68 @@ function graphKey(value) {
 
   document.getElementById("graphStatus").textContent =
     "Function: " + (input.value || "Enter a function");
+}
+ 
+function generateXYTable() {
+  const expressionInput = document.getElementById("graphExpression");
+  const startInput = document.getElementById("tableStartX");
+  const stepInput = document.getElementById("tableStepX");
+  const tableBody = document.getElementById("xyTableBody");
+  const status = document.getElementById("xyTableStatus");
+
+  const expression = expressionInput.value.trim();
+  const startX = Number(startInput.value);
+  const stepX = Number(stepInput.value);
+
+  if (!expression) {
+    status.textContent = "Please enter a graph function first.";
+    return;
+  }
+
+  if (startInput.value.trim() === "" || !Number.isFinite(startX)) {
+    status.textContent = "Please enter a valid Start X value.";
+    return;
+  }
+
+  if (stepInput.value.trim() === "" || !Number.isFinite(stepX) || stepX === 0) {
+    status.textContent = "Step must be a valid number other than zero.";
+    return;
+  }
+
+  if (typeof window.graphTableEvaluate !== "function") {
+    status.textContent = "Please tap Draw Graph first, then generate the table.";
+    return;
+  }
+
+  tableBody.innerHTML = "";
+
+  for (let i = 0; i < 21; i++) {
+    const x = startX + i * stepX;
+    const row = document.createElement("tr");
+    row.style.background = i % 2 === 0 ? "#111c30" : "#08101f";
+
+    const xCell = document.createElement("td");
+    const yCell = document.createElement("td");
+
+    xCell.style.cssText = "padding:9px;border:1px solid #33415b";
+    yCell.style.cssText = "padding:9px;border:1px solid #33415b";
+    xCell.textContent = Number(x.toFixed(6)).toString();
+
+    try {
+      const y = window.graphTableEvaluate(x);
+      yCell.textContent = Number.isFinite(y)
+        ? Number(y.toFixed(6)).toString()
+        : "Undefined";
+    } catch (error) {
+      yCell.textContent = "Undefined";
+    }
+
+    row.appendChild(xCell);
+    row.appendChild(yCell);
+    tableBody.appendChild(row);
+  }
+
+  status.textContent = "Showing 21 calculated values.";
 }
 </script>
 </body>
