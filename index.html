@@ -90,6 +90,42 @@ footer{text-align:center;color:#8291aa;padding:25px;font-size:12px}
 <button class="fn" onclick="insert('×10^(')">EXP</button>
 </div>
 </section>
+ <section class="extra" id="graphSection">
+  <h2>📈 Graphing Calculator</h2>
+  <p style="color:#a8b5ca;font-size:14px">
+    Enter a function of x, for example x^2 or 2*x+3.
+  </p>
+
+  <input
+    id="graphExpression"
+    type="text"
+    inputmode="none"
+    autocomplete="off"
+    placeholder="Example: x^2"
+    style="width:100%;padding:13px;border-radius:9px;
+    border:1px solid #33415b;background:#08101f;
+    color:white;font-size:16px"
+  >
+
+  <button
+    onclick="drawGraph()"
+    style="width:100%;margin-top:10px;
+    background:#2563eb;color:white"
+  >Draw Graph</button>
+
+  <p id="graphStatus"
+     style="color:#93c5fd;font-size:13px">
+    Enter a function and tap Draw Graph.
+  </p>
+
+  <div style="width:100%;overflow:hidden;background:#fff;
+  border-radius:10px">
+    <canvas id="graphCanvas"
+      width="600" height="400"
+      style="display:block;width:100%;height:auto">
+    </canvas>
+  </div>
+</section>
 <section class="extra">
 <h2>Calculation History</h2>
 <div id="history">Your recent calculations will appear here.</div>
