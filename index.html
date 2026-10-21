@@ -1253,6 +1253,7 @@ function calculateMatrix() {
 
 
 
+
 function calculateDerivative() {
   const input = document.getElementById("derivativeExpression");
   const result = document.getElementById("derivativeResult");
@@ -1330,9 +1331,10 @@ function calculateDerivative() {
         "6. Apply the rule: f'(x) = u'*v + u*v'.\n" +
         "Final answer: f'(x) = " + derivativeText;
 
-    } else if (/^\s*e\s*\^\s*x\s*$/i.test(normalizedExpression)) {
-    // Exponential function e^x
-    if (/^\s*e\s*\^\s*x\s*$/i.test(normalizedExpression)) {
+    } else if (
+      /^\s*e\s*\^\s*x\s*$/i.test(normalizedExpression)
+    ) {
+      // Exponential function e^x
       steps.textContent =
         "Step-by-step explanation:\n" +
         "1. Original function: f(x) = e^x.\n" +
@@ -1340,10 +1342,10 @@ function calculateDerivative() {
         "3. The derivative of e^x is itself.\n" +
         "Final answer: f'(x) = " + derivativeText;
 
-    // Natural logarithm ln(x), normalized to log(x)
     } else if (
       /^\s*log\s*\(\s*x\s*\)\s*$/i.test(normalizedExpression)
     ) {
+      // Natural logarithm ln(x)
       steps.textContent =
         "Step-by-step explanation:\n" +
         "1. Original function: f(x) = ln(x).\n" +
@@ -1386,7 +1388,7 @@ function calculateDerivative() {
         }
 
       } else {
-        // Existing power-rule explanation
+        // Power Rule
         const powerMatch = normalizedExpression.match(
           /^\s*x\s*(?:\^\s*(-?\d+(?:\.\d+)?))?\s*$/
         );
@@ -1403,6 +1405,7 @@ function calculateDerivative() {
               "2. This is a constant function.\n" +
               "3. The derivative of a constant is 0.\n" +
               "Final answer: f'(x) = 0";
+
           } else {
             const newPower = power - 1;
 
@@ -1423,7 +1426,7 @@ function calculateDerivative() {
           steps.textContent =
             "Step-by-step explanation is currently available " +
             "for single powers of x, sin(x), cos(x), tan(x), " +
-            "e^x and ln(x).\n" +
+            "e^x, ln(x), and supported Product Rule examples.\n" +
             "The derivative above is still calculated normally.";
         }
       }
