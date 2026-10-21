@@ -1309,9 +1309,15 @@ function calculateDerivative() {
           "Step-by-step explanation:\n" +
           "1. Original function: f(x) = x^" + power + "\n" +
           "2. Use the power rule: d(x^n)/dx = n*x^(n-1).\n" +
+          
           "3. Multiply by the power: " + power + "*x^(" + power + "-1).\n" +
           "4. Simplify: x^(" + power + "-1) = x^" +
-(power - 1) + ".\n" +
+          (power - 1) + ".\n" +
+          (power - 1 === 1
+            ? "5. Since x^1 = x, the result becomes " + power + "*x.\n"
+            : power - 1 === 0
+              ? "5. Since x^0 = 1, the result becomes " + power + ".\n"
+              : "5. The simplified power is x^" + (power - 1) + ".\n") +
           "Final answer: f'(x) = " +
           math.simplify(derivative).toString();
       }
