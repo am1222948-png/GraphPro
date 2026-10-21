@@ -1234,6 +1234,7 @@ function calculateMatrix() {
   result.textContent = title + " =\n" + showMatrix(answer);
 }
  
+
 function calculateDerivative() {
   const input = document.getElementById("derivativeExpression");
   const result = document.getElementById("derivativeResult");
@@ -1254,7 +1255,18 @@ function calculateDerivative() {
   }
 
   try {
-    const derivative = math.derivative(expression, "x");
+    // Math.js uses log(x) for the natural logarithm.
+    // Convert ln(x) to log(x) for symbolic differentiation.
+    const normalizedExpression = expression.replace(
+      /\bln\s*\(/gi,
+      "log("
+    );
+
+    const derivative = math.derivative(
+      normalizedExpression,
+      "x"
+    );
+
     const simplified = math.simplify(derivative);
 
     result.textContent =
@@ -1262,10 +1274,12 @@ function calculateDerivative() {
       "\n\nDerivative:\nf'(x) = " + simplified.toString();
   } catch (error) {
     result.textContent =
-      "Unable to calculate this function.\nExamples: x^3, sin(x), cos(x), ln(x), e^x, x^2*sin(x)\n\nDetails: " +
-      error.message;
+      "Unable to calculate this function.\n" +
+      "Examples: x^3, sin(x), cos(x), ln(x), log(x), e^x, x^2*sin(x)\n\n" +
+      "Details: " + error.message;
   }
- }
+}
+
 </script>
 </body>
   </html>
