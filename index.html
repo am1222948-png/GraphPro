@@ -1291,7 +1291,7 @@ function calculateDerivative() {
       "\n\nDerivative:\nf'(x) = " + math.simplify(derivative).toString();
 
     // Step-by-step explanation for a single power of x
-    const powerMatch = expression.match(
+    const powerMatch = normalizedExpression.match(
       /^\s*x\s*(?:\^\s*(-?\d+(?:\.\d+)?))?\s*$/
     );
 
