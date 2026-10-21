@@ -862,6 +862,69 @@ function solveEquation() {
       error.message || "Unable to solve this equation. Please check your input.";
   }
                                  }
+ 
+function solveQuadratic() {
+  const aInput = document.getElementById("quadA");
+  const bInput = document.getElementById("quadB");
+  const cInput = document.getElementById("quadC");
+  const result = document.getElementById("quadraticResult");
+
+  if (
+    aInput.value.trim() === "" ||
+    bInput.value.trim() === "" ||
+    cInput.value.trim() === ""
+  ) {
+    result.textContent = "Please enter values for a, b and c.";
+    return;
+  }
+
+  const a = Number(aInput.value);
+  const b = Number(bInput.value);
+  const c = Number(cInput.value);
+
+  if (![a, b, c].every(Number.isFinite)) {
+    result.textContent = "Please enter valid numbers.";
+    return;
+  }
+
+  if (a === 0) {
+    result.textContent = "Value of a cannot be zero. Enter a quadratic equation.";
+    return;
+  }
+
+  const discriminant = b * b - 4 * a * c;
+
+  if (discriminant > 0) {
+    const x1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+    const x2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+
+    result.textContent =
+      "Two real solutions: x₁ = " +
+      Number(x1.toPrecision(10)) +
+      ", x₂ = " +
+      Number(x2.toPrecision(10));
+  } else if (Math.abs(discriminant) < 1e-12) {
+    const x = -b / (2 * a);
+
+    result.textContent =
+      "One repeated real solution: x = " +
+      Number(x.toPrecision(10));
+  } else {
+    const real = -b / (2 * a);
+    const imaginary = Math.sqrt(-discriminant) / (2 * Math.abs(a));
+
+    result.textContent =
+      "Two complex solutions: x₁ = " +
+      Number(real.toPrecision(10)) +
+      " + " +
+      Number(imaginary.toPrecision(10)) +
+      "i, x₂ = " +
+      Number(real.toPrecision(10)) +
+      " - " +
+      Number(imaginary.toPrecision(10)) +
+      "i";
+  }
+ }
 </script>
 </body>
   </html>
