@@ -295,6 +295,76 @@ Enter a function in the Graph section first.
     Enter a, b and c, then tap Solve.
   </div>
 </section>
+ 
+<section class="extra" id="percentageRatioSection">
+  <h2>📊 Percentage & Ratio Calculator</h2>
+
+  <h3 style="font-size:15px;color:#93c5fd">Percentage of a Number</h3>
+  <label for="percentValue" style="color:#cbd5e1">Number</label>
+  <input id="percentValue" type="number" placeholder="e.g. 200" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <label for="percentRate" style="color:#cbd5e1">Percentage (%)</label>
+  <input id="percentRate" type="number" placeholder="e.g. 15" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <button type="button" onclick="calculatePercentage()"
+    style="width:100%;background:#2563eb;color:white">
+    Calculate Percentage
+  </button>
+
+  <div id="percentResult"
+    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
+    Percentage result will appear here.
+  </div>
+
+  <hr style="border-color:#33415b;margin:20px 0">
+
+  <h3 style="font-size:15px;color:#93c5fd">Percentage Increase / Decrease</h3>
+  <label for="oldValue" style="color:#cbd5e1">Original Value</label>
+  <input id="oldValue" type="number" placeholder="e.g. 100" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <label for="newValue" style="color:#cbd5e1">New Value</label>
+  <input id="newValue" type="number" placeholder="e.g. 120" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <button type="button" onclick="calculateChange()"
+    style="width:100%;background:#2563eb;color:white">
+    Calculate Change
+  </button>
+
+  <div id="changeResult"
+    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
+    Change result will appear here.
+  </div>
+
+  <hr style="border-color:#33415b;margin:20px 0">
+
+  <h3 style="font-size:15px;color:#93c5fd">Simplify a Ratio</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div>
+      <label for="ratioA" style="color:#cbd5e1">First Number</label>
+      <input id="ratioA" type="number" placeholder="e.g. 12" step="1"
+        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+    <div>
+      <label for="ratioB" style="color:#cbd5e1">Second Number</label>
+      <input id="ratioB" type="number" placeholder="e.g. 18" step="1"
+        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+  </div>
+
+  <button type="button" onclick="simplifyRatio()"
+    style="width:100%;margin-top:10px;background:#2563eb;color:white">
+    Simplify Ratio
+  </button>
+
+  <div id="ratioResult"
+    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
+    Simplified ratio will appear here.
+  </div>
+</section>
 <section class="extra">
 <h2>Calculation History</h2>
 <div id="history">Your recent calculations will appear here.</div>
