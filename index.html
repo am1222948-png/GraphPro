@@ -1237,116 +1237,35 @@ function calculateMatrix() {
 function calculateDerivative() {
   const input = document.getElementById("derivativeExpression");
   const result = document.getElementById("derivativeResult");
-  const expression = input.value.trim().replace(/\s+/g, "");
+  const expression = input.value.trim();
 
   if (!expression) {
     result.textContent = "Please enter a function first.";
     return;
   }
 
-  // Normalize powers and multiplication signs
-  const expr = expression.replace(/\*\*/g, "^");
-
-  // Accept polynomial terms such as:
-  // 3*x^2, -x^3, 5*x, x, and constants.
-  const terms = expr.match(/[+-]?[^+-]+/g);
-
-  if (!terms || terms.join("") !== expr) {
+  if (
+    typeof math === "undefined" ||
+    typeof math.derivative !== "function"
+  ) {
     result.textContent =
-      "Could not read this function. Try: x^3 + 2*x^2 - 5*x + 4";
+      "Math.js library failed to load. Please check your internet connection and reload the page.";
     return;
   }
 
-  const derivativeTerms = [];
+  try {
+    const derivative = math.derivative(expression, "x");
+    const simplified = math.simplify(derivative);
 
-  for (let term of terms) {
-    let sign = 1;
-
-    if (term[0] === "+") term = term.slice(1);
-    else if (term[0] === "-") {
-      sign = -1;
-      term = term.slice(1);
-    }
-
-    if (!term) {
-      result.textContent = "Invalid expression.";
-      return;
-    }
-
-    if (!term.includes("x")) {
-      if (!/^\d+(\.\d+)?$/.test(term)) {
-        result.textContent =
-          "This version supports polynomial terms only. Example: 3*x^2 - 4*x + 7";
-        return;
-      }
-      continue;
-    }
-
-    const match = term.match(
-      /^(?:(\d+(?:\.\d+)?)\*?)?x(?:\^(\d+(?:\.\d+)?))?$/
-    );
-
-    if (!match) {
-      result.textContent =
-        "Unsupported term: " + (sign < 0 ? "-" : "") + term +
-        "\nTry terms like x^3, 2*x^2, -5*x, or 4.";
-      return;
-    }
-
-    const coefficient = sign * (match[1] === undefined ? 1 : Number(match[1]));
-    const power = match[2] === undefined ? 1 : Number(match[2]);
-
-    if (!Number.isFinite(power) || power < 0 || power > 100) {
-      result.textContent = "Please use a power between 0 and 100.";
-      return;
-    }
-
-    if (power === 0) continue;
-
-    const newCoefficient = coefficient * power;
-    const newPower = power - 1;
-
-    let newTerm;
-
-    if (newPower === 0) {
-      newTerm = String(newCoefficient);
-    } else {
-      const coeffText =
-        Math.abs(newCoefficient) === 1
-          ? (newCoefficient < 0 ? "-" : "")
-          : String(newCoefficient) + "*";
-
-      newTerm = coeffText + "x" +
-        (newPower === 1 ? "" : "^" + newPower);
-    }
-
-    derivativeTerms.push(newTerm);
+    result.textContent =
+      "Original function:\nf(x) = " + expression +
+      "\n\nDerivative:\nf'(x) = " + simplified.toString();
+  } catch (error) {
+    result.textContent =
+      "Unable to calculate this function.\nExamples: x^3, sin(x), cos(x), ln(x), e^x, x^2*sin(x)\n\nDetails: " +
+      error.message;
   }
-
-  if (derivativeTerms.length === 0) {
-    result.textContent = "f'(x) = 0";
-    return;
-  }
-
-  let output = derivativeTerms[0];
-
-  for (let i = 1; i < derivativeTerms.length; i++) {
-    const term = derivativeTerms[i];
-
-    if (term.startsWith("-")) {
-      output += " - " + term.slice(1);
-    } else {
-      output += " + " + term;
-    }
-  }
-
-  output = output
-    .replace(/\+\s*-/g, "- ")
-    .replace(/1\*x/g, "x")
-    .replace(/-1\*x/g, "-x");
-
-  result.textContent = "f'(x) = " + output;
-}
+ }
 </script>
 </body>
   </html>
