@@ -415,6 +415,7 @@ Enter a function in the Graph section first.
   >
 
   <button onclick="calculateDerivative()">Calculate Derivative</button>
+ 
 <button onclick="calculateSecondDerivative()">
   Calculate Second Derivative
 </button>
@@ -422,6 +423,8 @@ Enter a function in the Graph section first.
      style="margin-top:12px;white-space:pre-wrap"></div>
   <div id="derivativeResult" style="margin-top:12px;white-space:pre-wrap"></div>
  
+<div id="derivativeSteps"
+     style="margin-top:12px;white-space:pre-wrap"></div>
 <button onclick="calculateThirdDerivative()">
   Calculate Third Derivative
 </button>
@@ -1251,10 +1254,12 @@ function calculateMatrix() {
 function calculateDerivative() {
   const input = document.getElementById("derivativeExpression");
   const result = document.getElementById("derivativeResult");
+  const steps = document.getElementById("derivativeSteps");
   const expression = input.value.trim();
 
   if (!expression) {
     result.textContent = "Please enter a function first.";
+    steps.textContent = "";
     return;
   }
 
@@ -1263,13 +1268,12 @@ function calculateDerivative() {
     typeof math.derivative !== "function"
   ) {
     result.textContent =
-      "Math.js library failed to load. Please check your internet connection and reload the page.";
+      "Math.js library failed to load. Please reload the page.";
+    steps.textContent = "";
     return;
   }
 
   try {
-    // Math.js uses log(x) for the natural logarithm.
-    // Convert ln(x) to log(x) for symbolic differentiation.
     const normalizedExpression = expression.replace(
       /\bln\s*\(/gi,
       "log("
@@ -1280,16 +1284,46 @@ function calculateDerivative() {
       "x"
     );
 
-    const simplified = math.simplify(derivative);
-
     result.textContent =
       "Original function:\nf(x) = " + expression +
-      "\n\nDerivative:\nf'(x) = " + simplified.toString();
+      "\n\nDerivative:\nf'(x) = " + math.simplify(derivative).toString();
+
+    // Step-by-step explanation for a single power of x
+    const powerMatch = expression.match(
+      /^\s*x\s*(?:\^\s*(-?\d+(?:\.\d+)?))?\s*$/
+    );
+
+    if (powerMatch) {
+      const power = powerMatch[1] === undefined
+        ? 1
+        : Number(powerMatch[1]);
+
+      if (power === 0) {
+        steps.textContent =
+          "Step-by-step explanation:\n" +
+          "1. The function is a constant: f(x) = 1.\n" +
+          "2. The derivative of a constant is 0.\n" +
+          "Final answer: f'(x) = 0";
+      } else {
+        steps.textContent =
+          "Step-by-step explanation:\n" +
+          "1. Original function: f(x) = x^" + power + "\n" +
+          "2. Use the power rule: d(x^n)/dx = n*x^(n-1).\n" +
+          "3. Multiply by the power: " + power + "*x^(" + power + "-1).\n" +
+          "4. Simplify the power.\n" +
+          "Final answer: f'(x) = " +
+          math.simplify(derivative).toString();
+      }
+    } else {
+      steps.textContent =
+        "Step-by-step explanation is currently available " +
+        "for simple powers such as x^2 and x^3.\n" +
+        "The derivative above is still calculated normally.";
+    }
   } catch (error) {
     result.textContent =
-      "Unable to calculate this function.\n" +
-      "Examples: x^3, sin(x), cos(x), ln(x), log(x), e^x, x^2*sin(x)\n\n" +
-      "Details: " + error.message;
+      "Unable to calculate this function.\nDetails: " + error.message;
+    steps.textContent = "";
   }
 }
 
