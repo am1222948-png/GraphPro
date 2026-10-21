@@ -1251,6 +1251,7 @@ function calculateMatrix() {
 }
  
 
+
 function calculateDerivative() {
   const input = document.getElementById("derivativeExpression");
   const result = document.getElementById("derivativeResult");
@@ -1275,63 +1276,97 @@ function calculateDerivative() {
 
   try {
     const normalizedExpression = expression
-  .replace(/³/g, "^3")
-  .replace(/²/g, "^2")
-  .replace(/⁴/g, "^4")
-  .replace(/⁵/g, "^5")
-  .replace(/\bln\s*\(/gi, "log(");
+      .replace(/³/g, "^3")
+      .replace(/²/g, "^2")
+      .replace(/⁴/g, "^4")
+      .replace(/⁵/g, "^5")
+      .replace(/\bln\s*\(/gi, "log(");
 
     const derivative = math.derivative(
       normalizedExpression,
       "x"
     );
 
+    const derivativeText =
+      math.simplify(derivative).toString();
+
     result.textContent =
       "Original function:\nf(x) = " + expression +
-      "\n\nDerivative:\nf'(x) = " + math.simplify(derivative).toString();
+      "\n\nDerivative:\nf'(x) = " + derivativeText;
 
-    
-    // Step-by-step explanation for a single power of x
-    const powerMatch = normalizedExpression.match(
-      /^\s*x\s*(?:\^\s*(-?\d+(?:\.\d+)?))?\s*$/
+    // Trigonometric derivative explanations
+    const trigMatch = normalizedExpression.match(
+      /^\s*(sin|cos|tan)\s*\(\s*x\s*\)\s*$/i
     );
 
-    if (powerMatch) {
-      const power = powerMatch[1] === undefined
-        ? 1
-        : Number(powerMatch[1]);
+    if (trigMatch) {
+      const trigFunction = trigMatch[1].toLowerCase();
 
-      const derivativeText =
-        math.simplify(derivative).toString();
-
-      if (power === 0) {
+      if (trigFunction === "sin") {
         steps.textContent =
           "Step-by-step explanation:\n" +
-          "1. Original function: f(x) = 1.\n" +
-          "2. This is a constant function.\n" +
-          "3. The derivative of a constant is 0.\n" +
-          "Final answer: f'(x) = 0";
+          "1. Original function: f(x) = sin(x).\n" +
+          "2. Use the rule: d(sin(x))/dx = cos(x).\n" +
+          "3. Replace sin(x) with its derivative, cos(x).\n" +
+          "Final answer: f'(x) = " + derivativeText;
+      } else if (trigFunction === "cos") {
+        steps.textContent =
+          "Step-by-step explanation:\n" +
+          "1. Original function: f(x) = cos(x).\n" +
+          "2. Use the rule: d(cos(x))/dx = -sin(x).\n" +
+          "3. Add the negative sign to sin(x).\n" +
+          "Final answer: f'(x) = " + derivativeText;
       } else {
-        const newPower = power - 1;
-
         steps.textContent =
           "Step-by-step explanation:\n" +
-          "1. Original function: f(x) = x^" + power + "\n" +
-          "2. Use the power rule: d(x^n)/dx = n*x^(n-1).\n" +
-          "3. Multiply by the power: " + power +
-          "*x^(" + power + "-1).\n" +
-          "4. Subtract 1 from the power: " + power +
-          " - 1 = " + newPower + ".\n" +
-          "5. Write the result using the new power: " +
-          power + "*x^(" + newPower + ").\n" +
+          "1. Original function: f(x) = tan(x).\n" +
+          "2. Use the rule: d(tan(x))/dx = sec(x)^2.\n" +
+          "3. The derivative is sec(x)^2.\n" +
           "Final answer: f'(x) = " + derivativeText;
       }
+
     } else {
-      steps.textContent =
-        "Step-by-step explanation is currently available " +
-        "for single powers of x, such as x^3, x^-2 and x^1.5.\n" +
-        "The derivative above is still calculated normally.";
+      // Existing power-rule explanation
+      const powerMatch = normalizedExpression.match(
+        /^\s*x\s*(?:\^\s*(-?\d+(?:\.\d+)?))?\s*$/
+      );
+
+      if (powerMatch) {
+        const power = powerMatch[1] === undefined
+          ? 1
+          : Number(powerMatch[1]);
+
+        if (power === 0) {
+          steps.textContent =
+            "Step-by-step explanation:\n" +
+            "1. Original function: f(x) = 1.\n" +
+            "2. This is a constant function.\n" +
+            "3. The derivative of a constant is 0.\n" +
+            "Final answer: f'(x) = 0";
+        } else {
+          const newPower = power - 1;
+
+          steps.textContent =
+            "Step-by-step explanation:\n" +
+            "1. Original function: f(x) = x^" + power + "\n" +
+            "2. Use the power rule: d(x^n)/dx = n*x^(n-1).\n" +
+            "3. Multiply by the power: " + power +
+            "*x^(" + power + "-1).\n" +
+            "4. Subtract 1 from the power: " + power +
+            " - 1 = " + newPower + ".\n" +
+            "5. Write the result using the new power: " +
+            power + "*x^(" + newPower + ").\n" +
+            "Final answer: f'(x) = " + derivativeText;
+        }
+      } else {
+        steps.textContent =
+          "Step-by-step explanation is currently available " +
+          "for single powers of x and basic functions sin(x), " +
+          "cos(x), and tan(x).\n" +
+          "The derivative above is still calculated normally.";
+      }
     }
+
   } catch (error) {
     result.textContent =
       "Unable to calculate this function.\nDetails: " + error.message;
