@@ -1310,7 +1310,8 @@ function calculateDerivative() {
           "1. Original function: f(x) = x^" + power + "\n" +
           "2. Use the power rule: d(x^n)/dx = n*x^(n-1).\n" +
           "3. Multiply by the power: " + power + "*x^(" + power + "-1).\n" +
-          "4. Simplify the power.\n" +
+          "4. Simplify: x^(" + power + "-1) = x^" +
+(power - 1) + ".\n" +
           "Final answer: f'(x) = " +
           math.simplify(derivative).toString();
       }
