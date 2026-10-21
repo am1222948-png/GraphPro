@@ -415,7 +415,12 @@ Enter a function in the Graph section first.
   >
 
   <button onclick="calculateDerivative()">Calculate Derivative</button>
+<button onclick="calculateSecondDerivative()">
+  Calculate Second Derivative
+</button>
 
+<div id="secondDerivativeResult"
+     style="margin-top:12px;white-space:pre-wrap"></div>
   <div id="derivativeResult" style="margin-top:12px;white-space:pre-wrap"></div>
 </section>
  
@@ -1280,6 +1285,53 @@ function calculateDerivative() {
   }
 }
 
+function calculateSecondDerivative() {
+  const input = document.getElementById("derivativeExpression");
+  const result = document.getElementById("secondDerivativeResult");
+  const expression = input.value.trim();
+
+  if (!expression) {
+    result.textContent = "Please enter a function first.";
+    return;
+  }
+
+  if (
+    typeof math === "undefined" ||
+    typeof math.derivative !== "function"
+  ) {
+    result.textContent =
+      "Math.js library failed to load. Please reload the page.";
+    return;
+  }
+
+  try {
+    const normalizedExpression = expression.replace(
+      /\bln\s*\(/gi,
+      "log("
+    );
+
+    const firstDerivative = math.derivative(
+      normalizedExpression,
+      "x"
+    );
+
+    const secondDerivative = math.derivative(
+      firstDerivative,
+      "x"
+    );
+
+    result.textContent =
+      "Original function:\nf(x) = " + expression +
+      "\n\nFirst Derivative:\nf'(x) = " +
+      firstDerivative.toString() +
+      "\n\nSecond Derivative:\nf''(x) = " +
+      math.simplify(secondDerivative).toString();
+  } catch (error) {
+    result.textContent =
+      "Unable to calculate the second derivative.\n" +
+      "Details: " + error.message;
+  }
+ }
 </script>
 </body>
   </html>
