@@ -515,415 +515,10 @@ Enter a function in the Graph section first.
     <option value="detA">Determinant of A</option>
     <option value="detB">Determinant of B</option>
     <option value="inverseA">Inverse of A</option>
-     width="600" height="400"
-      style="display:block;width:100%;height:auto">
-    </canvas>
-  </div>
-</section>
- 
-<section class="extra" id="xyTableSection">
-  <h2>📊 X-Y Value Table</h2>
-  <p style="color:#a8b5ca;font-size:14px">
-    
-View the X and Y values of your graph function here.
-  </p>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div>
-      <label for="tableStartX" style="color:#cbd5e1">Start X</label>
-      <input id="tableStartX" type="number" value="-5"
-        style="width:100%;padding:12px;box-sizing:border-box;
-        border-radius:8px;border:1px solid #33415b;
-        background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="tableStepX" style="color:#cbd5e1">Step</label>
-      <input id="tableStepX" type="number" value="1" step="any"
-        style="width:100%;padding:12px;box-sizing:border-box;
-        border-radius:8px;border:1px solid #33415b;
-        background:#08101f;color:white;font-size:16px">
-    </div>
-  </div>
-
-  <button type="button" onclick="generateXYTable()"
-    style="width:100%;margin-top:10px;background:#2563eb;color:white">
-    Generate X-Y Table
-  </button>
-
-  <p id="xyTableStatus" style="color:#93c5fd;font-size:13px">
-    
-Enter a function in the Graph section first.
-  </p>
-
-  <div style="overflow-x:auto">
-    <table style="width:100%;border-collapse:collapse;color:white;text-align:center">
-      <thead>
-        <tr style="background:#1e3a5f">
-          <th style="padding:10px;border:1px solid #33415b">X</th>
-          <th style="padding:10px;border:1px solid #33415b">Y</th>
-        </tr>
-      </thead>
-      <tbody id="xyTableBody">
-        <tr><td colspan="2" style="padding:10px">Table is empty.</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
- 
-<section class="extra" id="equationSolverSection">
-  <h2>🧮 Equation Solver</h2>
-  <p style="color:#a8b5ca;font-size:14px">
-    Enter a linear equation, for example 2*x+5=15.
-  </p>
-
-  <input
-    id="equationInput"
-    type="text"
-    inputmode="none"
-    autocomplete="off"
-    placeholder="Example: 2*x+5=15"
-    style="width:100%;padding:13px;box-sizing:border-box;
-    border-radius:9px;border:1px solid #33415b;
-    background:#08101f;color:white;font-size:16px"
-  >
-
-  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px">
-    <button type="button" onclick="equationKey('x')">x</button>
-    <button type="button" onclick="equationKey('1')">1</button>
-    <button type="button" onclick="equationKey('2')">2</button>
-    <button type="button" onclick="equationKey('+')">+</button>
-    <button type="button" onclick="equationKey('3')">3</button>
-    <button type="button" onclick="equationKey('4')">4</button>
-    <button type="button" onclick="equationKey('5')">5</button>
-    <button type="button" onclick="equationKey('-')">−</button>
-    <button type="button" onclick="equationKey('6')">6</button>
-    <button type="button" onclick="equationKey('7')">7</button>
-    <button type="button" onclick="equationKey('8')">8</button>
-    <button type="button" onclick="equationKey('*')">×</button>
-    <button type="button" onclick="equationKey('9')">9</button>
-    <button type="button" onclick="equationKey('0')">0</button>
-    <button type="button" onclick="equationKey('=')">=</button>
-    <button type="button" onclick="equationKey('/')">÷</button>
-    <button type="button" onclick="equationKey('.')">.</button>
-    <button type="button" onclick="equationKey('(')">(</button>
-    <button type="button" onclick="equationKey(')')">)</button>
-    <button type="button" onclick="equationKey('backspace')">⌫</button>
-  </div>
-
-  <button type="button" onclick="equationKey('clear')"
-    style="width:100%;margin-top:8px;background:#475569;color:white">
-    Clear
-  </button>
-
-  <button type="button" onclick="solveEquation()"
-    style="width:100%;margin-top:8px;background:#2563eb;color:white">
-    Solve Equation
-  </button>
-
-  <div id="equationResult"
-    style="margin-top:12px;padding:12px;border-radius:9px;
-    background:#08101f;color:#e2e8f0">
-    Your solution will appear here.
-  </div>
-</section>
- 
-<section class="extra" id="quadraticSolverSection">
-  <h2>📐 Quadratic Equation Solver</h2>
-
-  <p style="color:#a8b5ca;font-size:14px">
-    Solve equations in the form ax² + bx + c = 0.
-  </p>
-
-  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
-    <div>
-      <label for="quadA" style="color:#cbd5e1">a</label>
-      <input id="quadA" type="number" value="1" step="any"
-        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="quadB" style="color:#cbd5e1">b</label>
-      <input id="quadB" type="number" value="-5" step="any"
-        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="quadC" style="color:#cbd5e1">c</label>
-      <input id="quadC" type="number" value="6" step="any"
-        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-  </div>
-
-  <button type="button" onclick="solveQuadratic()"
-    style="width:100%;margin-top:12px;background:#2563eb;color:white">
-    Solve Quadratic Equation
-  </button>
-
-  <div id="quadraticResult"
-    style="margin-top:12px;padding:12px;border-radius:9px;background:#08101f;color:#e2e8f0">
-    Enter a, b and c, then tap Solve.
-  </div>
-</section>
- 
-<section class="extra" id="percentageRatioSection">
-  <h2>📊 Percentage & Ratio Calculator</h2>
-
-  <h3 style="font-size:15px;color:#93c5fd">Percentage of a Number</h3>
-  <label for="percentValue" style="color:#cbd5e1">Number</label>
-  <input id="percentValue" type="number" placeholder="e.g. 200" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <label for="percentRate" style="color:#cbd5e1">Percentage (%)</label>
-  <input id="percentRate" type="number" placeholder="e.g. 15" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <button type="button" onclick="calculatePercentage()"
-    style="width:100%;background:#2563eb;color:white">
-    Calculate Percentage
-  </button>
-
-  <div id="percentResult"
-    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
-    Percentage result will appear here.
-  </div>
-
-  <hr style="border-color:#33415b;margin:20px 0">
-
-  <h3 style="font-size:15px;color:#93c5fd">Percentage Increase / Decrease</h3>
-  <label for="oldValue" style="color:#cbd5e1">Original Value</label>
-  <input id="oldValue" type="number" placeholder="e.g. 100" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <label for="newValue" style="color:#cbd5e1">New Value</label>
-  <input id="newValue" type="number" placeholder="e.g. 120" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <button type="button" onclick="calculateChange()"
-    style="width:100%;background:#2563eb;color:white">
-    Calculate Change
-  </button>
-
-  <div id="changeResult"
-    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
-    Change result will appear here.
-  </div>
-
-  <hr style="border-color:#33415b;margin:20px 0">
-
-  <h3 style="font-size:15px;color:#93c5fd">Simplify a Ratio</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div>
-      <label for="ratioA" style="color:#cbd5e1">First Number</label>
-      <input id="ratioA" type="number" placeholder="e.g. 12" step="1"
-        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="ratioB" style="color:#cbd5e1">Second Number</label>
-      <input id="ratioB" type="number" placeholder="e.g. 18" step="1"
-        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-  </div>
-
-  <button type="button" onclick="simplifyRatio()"
-    style="width:100%;margin-top:10px;background:#2563eb;color:white">
-    Simplify Ratio
-  </button>
-
-  <div id="ratioResult"
-    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
-    Simplified ratio will appear here.
-  </div>
-</section>
- 
-<section class="extra" id="matrixCalculator">
-  <h2>Matrix Calculator</h2>
-  <p>Calculate 2×2 matrix operations.</p>
-
-  <h3>Matrix A</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <input id="mA11" type="number" value="1" placeholder="A11">
-    <input id="mA12" type="number" value="2" placeholder="A12">
-    <input id="mA21" type="number" value="3" placeholder="A21">
-    <input id="mA22" type="number" value="4" placeholder="A22">
-  </div>
-
-  <h3>Matrix B</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <input id="mB11" type="number" value="5" placeholder="B11">
-    <input id="mB12" type="number" value="6" placeholder="B12">
-    <input id="mB21" type="number" value="7" placeholder="B21">
-    <input id="mB22" type="number" value="8" placeholder="B22">
-  </div>
-
-  <label for="matrixOperation">Choose operation</label>
-  <select id="matrixOperation">
-    <option value="add">Addition (A + B)</option>
-    <option value="subtract">Subtraction (A − B)</option>
-    <option value="multiply">Multiplication (A × B)</option>
-    <option value="detA">Determinant of A</option>
-    <option value="detB">Determinant of B</option>
-    <option value="inverseA">Inverse of A</option>
-  nKey('=')">=</button>
-    <button type="button" onclick="equationKey('/')">÷</button>
-    <button type="button" onclick="equationKey('.')">.</button>
-    <button type="button" onclick="equationKey('(')">(</button>
-    <button type="button" onclick="equationKey(')')">)</button>
-    <button type="button" onclick="equationKey('backspace')">⌫</button>
-  </div>
-
-  <button type="button" onclick="equationKey('clear')"
-    style="width:100%;margin-top:8px;background:#475569;color:white">
-    Clear
-  </button>
-
-  <button type="button" onclick="solveEquation()"
-    style="width:100%;margin-top:8px;background:#2563eb;color:white">
-    Solve Equation
-  </button>
-
-  <div id="equationResult"
-    style="margin-top:12px;padding:12px;border-radius:9px;
-    background:#08101f;color:#e2e8f0">
-    Your solution will appear here.
-  </div>
-</section>
- 
-<section class="extra" id="quadraticSolverSection">
-  <h2>📐 Quadratic Equation Solver</h2>
-
-  <p style="color:#a8b5ca;font-size:14px">
-    Solve equations in the form ax² + bx + c = 0.
-  </p>
-
-  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
-    <div>
-      <label for="quadA" style="color:#cbd5e1">a</label>
-      <input id="quadA" type="number" value="1" step="any"
-        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="quadB" style="color:#cbd5e1">b</label>
-      <input id="quadB" type="number" value="-5" step="any"
-        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="quadC" style="color:#cbd5e1">c</label>
-      <input id="quadC" type="number" value="6" step="any"
-        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-  </div>
-
-  <button type="button" onclick="solveQuadratic()"
-    style="width:100%;margin-top:12px;background:#2563eb;color:white">
-    Solve Quadratic Equation
-  </button>
-
-  <div id="quadraticResult"
-    style="margin-top:12px;padding:12px;border-radius:9px;background:#08101f;color:#e2e8f0">
-    Enter a, b and c, then tap Solve.
-  </div>
-</section>
- 
-<section class="extra" id="percentageRatioSection">
-  <h2>📊 Percentage & Ratio Calculator</h2>
-
-  <h3 style="font-size:15px;color:#93c5fd">Percentage of a Number</h3>
-  <label for="percentValue" style="color:#cbd5e1">Number</label>
-  <input id="percentValue" type="number" placeholder="e.g. 200" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <label for="percentRate" style="color:#cbd5e1">Percentage (%)</label>
-  <input id="percentRate" type="number" placeholder="e.g. 15" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <button type="button" onclick="calculatePercentage()"
-    style="width:100%;background:#2563eb;color:white">
-    Calculate Percentage
-  </button>
-
-  <div id="percentResult"
-    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
-    Percentage result will appear here.
-  </div>
-
-  <hr style="border-color:#33415b;margin:20px 0">
-
-  <h3 style="font-size:15px;color:#93c5fd">Percentage Increase / Decrease</h3>
-  <label for="oldValue" style="color:#cbd5e1">Original Value</label>
-  <input id="oldValue" type="number" placeholder="e.g. 100" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <label for="newValue" style="color:#cbd5e1">New Value</label>
-  <input id="newValue" type="number" placeholder="e.g. 120" step="any"
-    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-
-  <button type="button" onclick="calculateChange()"
-    style="width:100%;background:#2563eb;color:white">
-    Calculate Change
-  </button>
-
-  <div id="changeResult"
-    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
-    Change result will appear here.
-  </div>
-
-  <hr style="border-color:#33415b;margin:20px 0">
-
-  <h3 style="font-size:15px;color:#93c5fd">Simplify a Ratio</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <div>
-      <label for="ratioA" style="color:#cbd5e1">First Number</label>
-      <input id="ratioA" type="number" placeholder="e.g. 12" step="1"
-        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-    <div>
-      <label for="ratioB" style="color:#cbd5e1">Second Number</label>
-      <input id="ratioB" type="number" placeholder="e.g. 18" step="1"
-        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
-    </div>
-  </div>
-
-  <button type="button" onclick="simplifyRatio()"
-    style="width:100%;margin-top:10px;background:#2563eb;color:white">
-    Simplify Ratio
-  </button>
-
-  <div id="ratioResult"
-    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
-    Simplified ratio will appear here.
-  </div>
-</section>
- 
-<section class="extra" id="matrixCalculator">
-  <h2>Matrix Calculator</h2>
-  <p>Calculate 2×2 matrix operations.</p>
-
-  <h3>Matrix A</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <input id="mA11" type="number" value="1" placeholder="A11">
-    <input id="mA12" type="number" value="2" placeholder="A12">
-    <input id="mA21" type="number" value="3" placeholder="A21">
-    <input id="mA22" type="number" value="4" placeholder="A22">
-  </div>
-
-  <h3>Matrix B</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-    <input id="mB11" type="number" value="5" placeholder="B11">
-    <input id="mB12" type="number" value="6" placeholder="B12">
-    <input id="mB21" type="number" value="7" placeholder="B21">
-    <input id="mB22" type="number" value="8" placeholder="B22">
-  </div>
-
-  <label for="matrixOperation">Choose operation</label>
-  <select id="matrixOperation">
-    <option value="add">Addition (A + B)</option>
-    <option value="subtract">Subtraction (A − B)</option>
-    <option value="multiply">Multiplication (A × B)</option>
-    <option value="detA">Determinant of A</option>
-    <option value="detB">Determinant of B</option>
-    <option value="inverseA">Inverse of A</option>
     <option value="inverseB">Inverse of B</option>
   </select>
 
-  <button onclick="calculateMatrix()">Calculate</button>
+  <button type="button" onclick="calculateMatrix()">Calculate</button>
   <div id="matrixResult" style="margin-top:12px;white-space:pre-wrap"></div>
 </section>
  
@@ -1956,11 +1551,96 @@ function calculateDerivative() {
           }
 
         } else {
-          steps.textContent =
-            "Step-by-step explanation is currently available " +
-            "for single powers of x, sin(x), cos(x), tan(x), " +
-            "e^x, ln(x), and supported Product Rule examples.\n" +
-            "The derivative above is still calculated normally.";
+          // Explain polynomial expressions term by term without changing
+          // the derivative calculation performed above.
+          const compact = normalizedExpression.replace(/\s+/g, "");
+          const polynomialTerms = compact.match(/[+-]?[^+-]+/g) || [];
+          const termDetails = [];
+          let polynomialSupported = polynomialTerms.length > 0;
+
+          for (const rawTerm of polynomialTerms) {
+            let sign = 1;
+            let body = rawTerm;
+
+            if (body.startsWith("+")) body = body.slice(1);
+            else if (body.startsWith("-")) {
+              sign = -1;
+              body = body.slice(1);
+            }
+
+            // Constant term, e.g. 4 or 2.5.
+            if (/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(body)) {
+              termDetails.push({
+                explanation: "The derivative of the constant " +
+                  (sign < 0 ? "-" : "") + body + " is 0."
+              });
+              continue;
+            }
+
+            // Power term, e.g. x, -x, 2*x^3, or -3*x^2.
+            const match = body.match(
+              /^(?:(\d+(?:\.\d*)?|\.\d+)\*?)?x(?:\^(\d+(?:\.\d*)?|\.\d+))?$/i
+            );
+
+            if (!match) {
+              polynomialSupported = false;
+              break;
+            }
+
+            const coefficient = sign * (match[1] === undefined ? 1 : Number(match[1]));
+            const power = match[2] === undefined ? 1 : Number(match[2]);
+
+            if (!Number.isFinite(power) || power < 0) {
+              polynomialSupported = false;
+              break;
+            }
+
+            let derivativeTerm;
+            if (power === 0) {
+              derivativeTerm = "0";
+            } else if (power === 1) {
+              derivativeTerm = format(coefficient);
+            } else {
+              derivativeTerm = format(coefficient * power) + "*x^" + format(power - 1);
+            }
+
+            const shownCoefficient = Math.abs(coefficient) === 1
+              ? (coefficient < 0 ? "-" : "") + "x"
+              : format(coefficient) + "*x";
+
+            const shownTerm = shownCoefficient + (power === 1 ? "" : "^" + format(power));
+
+            termDetails.push({
+              explanation: "For " + shownTerm +
+                ", use the power rule. Multiply the coefficient by the power: " +
+                format(coefficient) + " × " + format(power) +
+                ", then subtract 1 from the power. The derivative of this term is " +
+                derivativeTerm + "."
+            });
+          }
+
+          if (polynomialSupported && termDetails.length > 0) {
+            const lines = [
+              "Step-by-step explanation (Polynomial Rule):",
+              "1. Differentiate each term separately."
+            ];
+
+            termDetails.forEach((item, index) => {
+              lines.push((index + 2) + ". " + item.explanation);
+            });
+
+            lines.push(
+              "Combine the derivatives of all terms.",
+              "Final answer: f'(x) = " + derivativeText
+            );
+            steps.textContent = lines.join("\n");
+          } else {
+            steps.textContent =
+              "Step-by-step explanation is currently available " +
+              "for single powers of x, polynomials, sin(x), cos(x), tan(x), " +
+              "e^x, ln(x), and supported Product Rule examples.\n" +
+              "The derivative above is still calculated normally.";
+          }
         }
       }
     }
