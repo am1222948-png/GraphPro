@@ -995,6 +995,100 @@ function solveQuadratic() {
       "i";
   }
  }
+ 
+function calculatePercentage() {
+  const numberInput = document.getElementById("percentValue");
+  const rateInput = document.getElementById("percentRate");
+  const result = document.getElementById("percentResult");
+
+  if (numberInput.value.trim() === "" || rateInput.value.trim() === "") {
+    result.textContent = "Please enter both the number and percentage.";
+    return;
+  }
+
+  const number = Number(numberInput.value);
+  const rate = Number(rateInput.value);
+
+  if (!Number.isFinite(number) || !Number.isFinite(rate)) {
+    result.textContent = "Please enter valid numbers.";
+    return;
+  }
+
+  const answer = number * rate / 100;
+  result.textContent =
+    rate + "% of " + number + " = " +
+    Number(answer.toPrecision(10));
+}
+
+function calculateChange() {
+  const oldInput = document.getElementById("oldValue");
+  const newInput = document.getElementById("newValue");
+  const result = document.getElementById("changeResult");
+
+  if (oldInput.value.trim() === "" || newInput.value.trim() === "") {
+    result.textContent = "Please enter both the original and new values.";
+    return;
+  }
+
+  const oldValue = Number(oldInput.value);
+  const newValue = Number(newInput.value);
+
+  if (!Number.isFinite(oldValue) || !Number.isFinite(newValue)) {
+    result.textContent = "Please enter valid numbers.";
+    return;
+  }
+
+  if (oldValue === 0) {
+    result.textContent = "Original value cannot be zero for percentage change.";
+    return;
+  }
+
+  const change = ((newValue - oldValue) / Math.abs(oldValue)) * 100;
+  const amount = newValue - oldValue;
+  const label = amount > 0 ? "Increase" : amount < 0 ? "Decrease" : "No change";
+
+  result.textContent =
+    label + ": " + Number(Math.abs(change).toPrecision(10)) +
+    "% (difference: " + Number(Math.abs(amount).toPrecision(10)) + ")";
+}
+
+function simplifyRatio() {
+  const aInput = document.getElementById("ratioA");
+  const bInput = document.getElementById("ratioB");
+  const result = document.getElementById("ratioResult");
+
+  if (aInput.value.trim() === "" || bInput.value.trim() === "") {
+    result.textContent = "Please enter both ratio numbers.";
+    return;
+  }
+
+  const a = Number(aInput.value);
+  const b = Number(bInput.value);
+
+  if (!Number.isSafeInteger(a) || !Number.isSafeInteger(b)) {
+    result.textContent = "Please enter whole numbers for the ratio.";
+    return;
+  }
+
+  if (a < 0 || b < 0 || (a === 0 && b === 0)) {
+    result.textContent = "Use non-negative numbers, and at least one must be greater than zero.";
+    return;
+  }
+
+  function gcd(x, y) {
+    while (y !== 0) {
+      const remainder = x % y;
+      x = y;
+      y = remainder;
+    }
+    return x;
+  }
+
+  const divisor = gcd(a, b);
+
+  result.textContent =
+    "Simplified ratio: " + (a / divisor) + ":" + (b / divisor);
+}
 </script>
 </body>
   </html>
