@@ -365,6 +365,42 @@ Enter a function in the Graph section first.
     Simplified ratio will appear here.
   </div>
 </section>
+ 
+<section class="extra" id="matrixCalculator">
+  <h2>Matrix Calculator</h2>
+  <p>Calculate 2×2 matrix operations.</p>
+
+  <h3>Matrix A</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <input id="mA11" type="number" value="1" placeholder="A11">
+    <input id="mA12" type="number" value="2" placeholder="A12">
+    <input id="mA21" type="number" value="3" placeholder="A21">
+    <input id="mA22" type="number" value="4" placeholder="A22">
+  </div>
+
+  <h3>Matrix B</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <input id="mB11" type="number" value="5" placeholder="B11">
+    <input id="mB12" type="number" value="6" placeholder="B12">
+    <input id="mB21" type="number" value="7" placeholder="B21">
+    <input id="mB22" type="number" value="8" placeholder="B22">
+  </div>
+
+  <label for="matrixOperation">Choose operation</label>
+  <select id="matrixOperation">
+    <option value="add">Addition (A + B)</option>
+    <option value="subtract">Subtraction (A − B)</option>
+    <option value="multiply">Multiplication (A × B)</option>
+    <option value="detA">Determinant of A</option>
+    <option value="detB">Determinant of B</option>
+    <option value="inverseA">Inverse of A</option>
+    <option value="inverseB">Inverse of B</option>
+  </select>
+
+  <button onclick="calculateMatrix()">Calculate</button>
+  <div id="matrixResult" style="margin-top:12px;white-space:pre-wrap"></div>
+</section>
+ 
 <section class="extra">
 <h2>Calculation History</h2>
 <div id="history">Your recent calculations will appear here.</div>
@@ -1088,6 +1124,96 @@ function simplifyRatio() {
 
   result.textContent =
     "Simplified ratio: " + (a / divisor) + ":" + (b / divisor);
+}
+ 
+function calculateMatrix() {
+  const ids = [
+    "mA11", "mA12", "mA21", "mA22",
+    "mB11", "mB12", "mB21", "mB22"
+  ];
+
+  const values = ids.map(id => {
+    const input = document.getElementById(id);
+    return input.value.trim() === "" ? NaN : Number(input.value);
+  });
+
+  const result = document.getElementById("matrixResult");
+
+  if (!values.every(Number.isFinite)) {
+    result.textContent = "Please enter a valid number in every matrix box.";
+    return;
+  }
+
+  const [a, b, c, d, e, f, g, h] = values;
+  const A = [[a, b], [c, d]];
+  const B = [[e, f], [g, h]];
+  const operation = document.getElementById("matrixOperation").value;
+
+  function determinant(M) {
+    return M[0][0] * M[1][1] - M[0][1] * M[1][0];
+  }
+
+  function format(n) {
+    if (Math.abs(n) < 1e-10) n = 0;
+    return Number(n.toFixed(6)).toString();
+  }
+
+  function showMatrix(M) {
+    return M.map(row => "[ " + row.map(format).join(", ") + " ]").join("\n");
+  }
+
+  let answer;
+  let title = "";
+
+  switch (operation) {
+    case "add":
+      answer = A.map((row, i) => row.map((v, j) => v + B[i][j]));
+      title = "A + B";
+      break;
+
+    case "subtract":
+      answer = A.map((row, i) => row.map((v, j) => v - B[i][j]));
+      title = "A − B";
+      break;
+
+    case "multiply":
+      answer = [
+        [a * e + b * g, a * f + b * h],
+        [c * e + d * g, c * f + d * h]
+      ];
+      title = "A × B";
+      break;
+
+    case "detA":
+    case "detB": {
+      const M = operation === "detA" ? A : B;
+      result.textContent = "Determinant of " +
+        (operation === "detA" ? "A" : "B") +
+        " = " + format(determinant(M));
+      return;
+    }
+
+    case "inverseA":
+    case "inverseB": {
+      const M = operation === "inverseA" ? A : B;
+      const det = determinant(M);
+
+      if (Math.abs(det) < 1e-10) {
+        result.textContent =
+          "Inverse does not exist because the determinant is zero.";
+        return;
+      }
+
+      answer = [
+        [M[1][1] / det, -M[0][1] / det],
+        [-M[1][0] / det, M[0][0] / det]
+      ];
+      title = "Inverse of " + (operation === "inverseA" ? "A" : "B");
+      break;
+    }
+  }
+
+  result.textContent = title + " =\n" + showMatrix(answer);
 }
 </script>
 </body>
