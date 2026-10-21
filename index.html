@@ -3,35 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10182d">
+<meta name="theme-color" content="#080d1b">
 <title>GraphPro Calculator</title>
 <style>
+:root{
+  color-scheme:dark;
+  --bg:#080d1b;
+  --panel:#111a2e;
+  --panel2:#151f37;
+  --line:rgba(148,163,184,.19);
+  --text:#f4f7ff;
+  --muted:#a7b4ce;
+  --blue:#4f8cff;
+  --cyan:#35d6e8;
+  --purple:#9b7bff;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#0b1120;color:#f1f5f9;font-family:Arial,sans-serif}
-header{text-align:center;padding:22px 12px}
-header h1{margin:0;color:#60a5fa;font-size:29px}
-header p{color:#a8b5ca;margin:8px 0 0;font-size:14px}
-main{max-width:490px;margin:auto;padding:12px}
-.calculator{background:#151f33;padding:16px;border-radius:20px;border:1px solid #293751;box-shadow:0 15px 40px #0003}
-.mode{display:flex;gap:8px;margin-bottom:12px}
-.mode button{flex:1;background:#263550;color:#dbeafe}
-.mode button.active{background:#2563eb;color:white}
-#display{width:100%;height:76px;border:0;border-radius:12px;background:#08101f;color:#fff;font-size:29px;text-align:right;padding:15px;outline:none}
-#preview{height:27px;text-align:right;padding:7px 4px;color:#60a5fa;font-size:14px;overflow:hidden}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(56,105,255,.22),transparent 34rem),
+    radial-gradient(ellipse at 92% 18%,rgba(143,75,255,.15),transparent 30rem),
+    linear-gradient(180deg,#080d1b 0%,#0b1224 48%,#080d1b 100%);
+}
+header{
+  position:relative;
+  text-align:center;
+  padding:42px 16px 30px;
+  overflow:hidden;
+}
+header:before{
+  content:"✦  SMART MATH TOOLS  ✦";
+  display:inline-block;
+  margin-bottom:14px;
+  padding:7px 13px;
+  border:1px solid rgba(83,145,255,.35);
+  border-radius:999px;
+  background:rgba(42,83,160,.18);
+  color:#9dc7ff;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+header h1{
+  margin:0;
+  font-size:clamp(38px,8vw,54px);
+  line-height:1.05;
+  letter-spacing:-1.8px;
+  font-weight:900;
+  color:#fff;
+  text-shadow:0 0 32px rgba(79,140,255,.28);
+}
+header h1:after{
+  content:".";
+  color:var(--cyan);
+}
+header p{
+  max-width:420px;
+  margin:13px auto 0;
+  color:#b7c5df;
+  font-size:15px;
+  line-height:1.6;
+}
+main{width:min(100% - 28px,760px);margin:0 auto;padding:8px 0 28px}
+.calculator,.extra{
+  position:relative;
+  margin-top:20px;
+  padding:clamp(15px,3.5vw,22px);
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(145deg,rgba(22,33,58,.97),rgba(13,21,39,.98));
+  box-shadow:0 18px 48px rgba(0,0,0,.23),inset 0 1px 0 rgba(255,255,255,.035);
+}
+.calculator{
+  margin-top:0;
+  border-color:rgba(79,140,255,.36);
+  box-shadow:0 22px 60px rgba(0,0,0,.3),0 0 38px rgba(50,105,255,.08);
+}
+.mode{display:flex;gap:9px;margin-bottom:13px}
+.mode button{flex:1;background:#202d49;color:#dbeafe}
+.mode button.active{background:linear-gradient(135deg,#4f8cff,#735bff);color:white;box-shadow:0 5px 18px rgba(79,140,255,.25)}
+#display{
+  width:100%;height:82px;border:1px solid rgba(125,160,225,.15);
+  border-radius:15px;background:#070d1b;color:#fff;font-size:clamp(26px,6vw,34px);
+  text-align:right;padding:15px;outline:none;box-shadow:inset 0 3px 14px rgba(0,0,0,.25)
+}
+#display:focus{border-color:rgba(79,140,255,.7)}
+#preview{height:29px;text-align:right;padding:8px 4px;color:#70dff0;font-size:14px;overflow:hidden}
 .keys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-button{border:0;border-radius:10px;min-height:49px;font-size:16px;font-weight:600;background:#263550;color:#f1f5f9;cursor:pointer}
+button{
+  border:1px solid rgba(155,178,220,.08);border-radius:12px;min-height:49px;
+  padding:8px 4px;font-size:15px;font-weight:700;
+  background:linear-gradient(145deg,#263652,#1b2841);color:#f3f6ff;
+  cursor:pointer;transition:transform .16s ease,filter .16s ease,border-color .16s ease,box-shadow .16s ease
+}
+button:hover{filter:brightness(1.16);border-color:rgba(117,164,255,.35);box-shadow:0 5px 16px rgba(0,0,0,.14)}
 button:active{filter:brightness(1.25);transform:scale(.97)}
-button.fn{background:#1c4261;color:#93c5fd}
-button.op{background:#33415b}
-button.clear{background:#7f2636}
-button.equal{background:#2563eb;color:white}
-button:focus-visible{outline:2px solid #93c5fd;outline-offset:2px}
-.extra{margin-top:20px;background:#151f33;padding:16px;border-radius:16px}
-.extra h2{font-size:18px;margin:0 0 10px}
+button.fn{background:linear-gradient(145deg,#173f60,#19314e);color:#8ee7f4}
+button.op{background:linear-gradient(145deg,#34415f,#26344f);color:#d9e5ff}
+button.clear{background:linear-gradient(135deg,#a72f58,#762c50);color:#fff}
+button.equal{background:linear-gradient(135deg,#3989ff,#7458f6);color:white;box-shadow:0 7px 20px rgba(76,112,255,.25)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #78dff4;outline-offset:2px}
+.extra h2{font-size:20px;line-height:1.3;margin:0 0 12px;color:#f5f7ff;letter-spacing:-.3px}
+.extra h2:first-letter{color:#83b8ff}
+.extra h3{margin-top:17px}
+.extra p{line-height:1.65}
+input,select{
+  max-width:100%;
+  accent-color:#5b8cff;
+}
+.extra input,.extra select{
+  border:1px solid rgba(133,162,216,.25)!important;
+  border-radius:10px!important;
+  background:#080f20!important;
+  color:#f4f7ff!important;
+}
+.extra input::placeholder{color:#71819e}
+.extra input:focus,.extra select:focus{border-color:#5b8cff!important;box-shadow:0 0 0 3px rgba(79,140,255,.12)}
+.extra button[style*="background:#2563eb"],.extra button[style*="background: #2563eb"]{
+  background:linear-gradient(135deg,#3989ff,#7458f6)!important;
+  border:0;
+  box-shadow:0 7px 18px rgba(76,112,255,.18)
+}
+.extra button{margin-top:5px}
+.extra hr{opacity:.55}
 #history{color:#cbd5e1;font-size:14px;overflow-wrap:anywhere}
-.history-row{padding:9px 0;border-bottom:1px solid #293751}
-footer{text-align:center;color:#8291aa;padding:25px;font-size:12px}
-@media(max-width:360px){main{padding:7px}.calculator{padding:10px}.keys{gap:6px}button{font-size:14px;min-height:45px}#display{font-size:24px}}
+.history-row{padding:11px 2px;border-bottom:1px solid var(--line)}
+#graphCanvas{border-radius:10px}
+footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
+@media(min-width:700px){
+  header{padding-top:52px;padding-bottom:35px}
+  .keys{gap:10px}
+  button{min-height:51px}
+}
+@media(max-width:380px){
+  main{width:calc(100% - 16px)}
+  header{padding:32px 12px 24px}
+  .calculator,.extra{padding:13px;border-radius:17px}
+  .keys{gap:6px}
+  button{font-size:14px;min-height:45px;border-radius:10px}
+  #display{height:72px;font-size:25px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  button{transition:none}
+}
 </style>
  <script src="https://unpkg.com/mathjs@15.2.0/lib/browser/math.js"></script>
 </head>
@@ -237,6 +357,165 @@ Enter a function in the Graph section first.
     <button type="button" onclick="equationKey('9')">9</button>
     <button type="button" onclick="equationKey('0')">0</button>
     <button type="button" onclick="equationKey('=')">=</button>
+    <button type="button" onclick="equationKey('/')">÷</button>
+    <button type="button" onclick="equationKey('.')">.</button>
+    <button type="button" onclick="equationKey('(')">(</button>
+    <button type="button" onclick="equationKey(')')">)</button>
+    <button type="button" onclick="equationKey('backspace')">⌫</button>
+  </div>
+
+  <button type="button" onclick="equationKey('clear')"
+    style="width:100%;margin-top:8px;background:#475569;color:white">
+    Clear
+  </button>
+
+  <button type="button" onclick="solveEquation()"
+    style="width:100%;margin-top:8px;background:#2563eb;color:white">
+    Solve Equation
+  </button>
+
+  <div id="equationResult"
+    style="margin-top:12px;padding:12px;border-radius:9px;
+    background:#08101f;color:#e2e8f0">
+    Your solution will appear here.
+  </div>
+</section>
+ 
+<section class="extra" id="quadraticSolverSection">
+  <h2>📐 Quadratic Equation Solver</h2>
+
+  <p style="color:#a8b5ca;font-size:14px">
+    Solve equations in the form ax² + bx + c = 0.
+  </p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+    <div>
+      <label for="quadA" style="color:#cbd5e1">a</label>
+      <input id="quadA" type="number" value="1" step="any"
+        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+    <div>
+      <label for="quadB" style="color:#cbd5e1">b</label>
+      <input id="quadB" type="number" value="-5" step="any"
+        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+    <div>
+      <label for="quadC" style="color:#cbd5e1">c</label>
+      <input id="quadC" type="number" value="6" step="any"
+        style="width:100%;padding:12px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+  </div>
+
+  <button type="button" onclick="solveQuadratic()"
+    style="width:100%;margin-top:12px;background:#2563eb;color:white">
+    Solve Quadratic Equation
+  </button>
+
+  <div id="quadraticResult"
+    style="margin-top:12px;padding:12px;border-radius:9px;background:#08101f;color:#e2e8f0">
+    Enter a, b and c, then tap Solve.
+  </div>
+</section>
+ 
+<section class="extra" id="percentageRatioSection">
+  <h2>📊 Percentage & Ratio Calculator</h2>
+
+  <h3 style="font-size:15px;color:#93c5fd">Percentage of a Number</h3>
+  <label for="percentValue" style="color:#cbd5e1">Number</label>
+  <input id="percentValue" type="number" placeholder="e.g. 200" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <label for="percentRate" style="color:#cbd5e1">Percentage (%)</label>
+  <input id="percentRate" type="number" placeholder="e.g. 15" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <button type="button" onclick="calculatePercentage()"
+    style="width:100%;background:#2563eb;color:white">
+    Calculate Percentage
+  </button>
+
+  <div id="percentResult"
+    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
+    Percentage result will appear here.
+  </div>
+
+  <hr style="border-color:#33415b;margin:20px 0">
+
+  <h3 style="font-size:15px;color:#93c5fd">Percentage Increase / Decrease</h3>
+  <label for="oldValue" style="color:#cbd5e1">Original Value</label>
+  <input id="oldValue" type="number" placeholder="e.g. 100" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <label for="newValue" style="color:#cbd5e1">New Value</label>
+  <input id="newValue" type="number" placeholder="e.g. 120" step="any"
+    style="width:100%;padding:12px;margin:6px 0 10px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+
+  <button type="button" onclick="calculateChange()"
+    style="width:100%;background:#2563eb;color:white">
+    Calculate Change
+  </button>
+
+  <div id="changeResult"
+    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
+    Change result will appear here.
+  </div>
+
+  <hr style="border-color:#33415b;margin:20px 0">
+
+  <h3 style="font-size:15px;color:#93c5fd">Simplify a Ratio</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div>
+      <label for="ratioA" style="color:#cbd5e1">First Number</label>
+      <input id="ratioA" type="number" placeholder="e.g. 12" step="1"
+        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+    <div>
+      <label for="ratioB" style="color:#cbd5e1">Second Number</label>
+      <input id="ratioB" type="number" placeholder="e.g. 18" step="1"
+        style="width:100%;padding:12px;margin-top:6px;border-radius:8px;border:1px solid #33415b;background:#08101f;color:white;font-size:16px">
+    </div>
+  </div>
+
+  <button type="button" onclick="simplifyRatio()"
+    style="width:100%;margin-top:10px;background:#2563eb;color:white">
+    Simplify Ratio
+  </button>
+
+  <div id="ratioResult"
+    style="margin-top:10px;padding:12px;border-radius:8px;background:#08101f;color:#e2e8f0">
+    Simplified ratio will appear here.
+  </div>
+</section>
+ 
+<section class="extra" id="matrixCalculator">
+  <h2>Matrix Calculator</h2>
+  <p>Calculate 2×2 matrix operations.</p>
+
+  <h3>Matrix A</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <input id="mA11" type="number" value="1" placeholder="A11">
+    <input id="mA12" type="number" value="2" placeholder="A12">
+    <input id="mA21" type="number" value="3" placeholder="A21">
+    <input id="mA22" type="number" value="4" placeholder="A22">
+  </div>
+
+  <h3>Matrix B</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <input id="mB11" type="number" value="5" placeholder="B11">
+    <input id="mB12" type="number" value="6" placeholder="B12">
+    <input id="mB21" type="number" value="7" placeholder="B21">
+    <input id="mB22" type="number" value="8" placeholder="B22">
+  </div>
+
+  <label for="matrixOperation">Choose operation</label>
+  <select id="matrixOperation">
+    <option value="add">Addition (A + B)</option>
+    <option value="subtract">Subtraction (A − B)</option>
+    <option value="multiply">Multiplication (A × B)</option>
+    <option value="detA">Determinant of A</option>
+    <option value="detB">Determinant of B</option>
+    <option value="inverseA">Inverse of A</option>
+  nKey('=')">=</button>
     <button type="button" onclick="equationKey('/')">÷</button>
     <button type="button" onclick="equationKey('.')">.</button>
     <button type="button" onclick="equationKey('(')">(</button>
