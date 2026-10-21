@@ -441,6 +441,14 @@ Enter a function in the Graph section first.
 </section>
 </main>
 <footer>GraphPro Calculator · Free maths tool</footer>
+ <script>
+window.addEventListener("error", function(e) {
+  alert(
+    "JavaScript Error: " + e.message +
+    "\nLine: " + e.lineno
+  );
+});
+ </script>
 <script>
 const display=document.getElementById('display');
 const preview=document.getElementById('preview');
