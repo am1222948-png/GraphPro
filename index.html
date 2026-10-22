@@ -191,6 +191,44 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
   grid-row: auto;
   min-height: 0;
 }
+  
+.graph-keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.graph-utility,
+.graph-scientific {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.graph-scientific {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.graph-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.graph-operators {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.graph-keypad button {
+  min-width: 0;
+  min-height: 43px;
+  padding: 8px 4px;
+  font-size: 15px;
+  border-radius: 8px;
+}
 </style>
  <script src="https://unpkg.com/mathjs@15.2.0/lib/browser/math.js"></script>
 </head>
@@ -276,32 +314,46 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
     color:white;font-size:16px"
   >
 
-<div id="graphKeypad" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:10px">
-  <button type="button" onclick="graphKey('x')">x</button>
-  <button type="button" onclick="graphKey('^2')">x²</button>
-  <button type="button" onclick="graphKey('+')">+</button>
-  <button type="button" onclick="graphKey('-')">−</button>
-  <button type="button" onclick="graphKey('*')">×</button>
-  <button type="button" onclick="graphKey('/')">÷</button>
-  <button type="button" onclick="graphKey('(')">(</button>
-  <button type="button" onclick="graphKey(')')">)</button>
-  <button type="button" onclick="graphKey('sin(')">sin</button>
-  <button type="button" onclick="graphKey('cos(')">cos</button>
-  <button type="button" onclick="graphKey('tan(')">tan</button>
-  <button type="button" onclick="graphKey('sqrt(')">√</button>
-  <button type="button" onclick="graphKey('7')">7</button>
-  <button type="button" onclick="graphKey('8')">8</button>
-  <button type="button" onclick="graphKey('9')">9</button>
-  <button type="button" onclick="graphKey('4')">4</button>
-  <button type="button" onclick="graphKey('5')">5</button>
-  <button type="button" onclick="graphKey('6')">6</button>
-  <button type="button" onclick="graphKey('1')">1</button>
-  <button type="button" onclick="graphKey('2')">2</button>
-  <button type="button" onclick="graphKey('3')">3</button>
-  <button type="button" onclick="graphKey('0')">0</button>
-  <button type="button" onclick="graphKey('.')">.</button>
-  <button type="button" onclick="graphKey('backspace')">⌫</button>
-  <button type="button" onclick="graphKey('clear')">AC</button>
+
+<div id="graphKeypad" class="graph-keypad">
+
+  <div class="graph-utility">
+    <button type="button" onclick="graphKey('clear')">AC</button>
+    <button type="button" onclick="graphKey('backspace')">⌫</button>
+    <button type="button" onclick="graphKey('(')">(</button>
+    <button type="button" onclick="graphKey(')')">)</button>
+  </div>
+
+  <div class="graph-scientific">
+    <button type="button" onclick="graphKey('sin(')">sin</button>
+    <button type="button" onclick="graphKey('cos(')">cos</button>
+    <button type="button" onclick="graphKey('tan(')">tan</button>
+    <button type="button" onclick="graphKey('sqrt(')">√</button>
+    <button type="button" onclick="graphKey('^2')">x²</button>
+  </div>
+
+  <div class="graph-numbers">
+    <button type="button" onclick="graphKey('7')">7</button>
+    <button type="button" onclick="graphKey('8')">8</button>
+    <button type="button" onclick="graphKey('9')">9</button>
+    <button type="button" onclick="graphKey('4')">4</button>
+    <button type="button" onclick="graphKey('5')">5</button>
+    <button type="button" onclick="graphKey('6')">6</button>
+    <button type="button" onclick="graphKey('1')">1</button>
+    <button type="button" onclick="graphKey('2')">2</button>
+    <button type="button" onclick="graphKey('3')">3</button>
+    <button type="button" onclick="graphKey('0')">0</button>
+    <button type="button" onclick="graphKey('.')">.</button>
+    <button type="button" onclick="graphKey('x')">x</button>
+  </div>
+
+  <div class="graph-operators">
+    <button type="button" onclick="graphKey('+')">+</button>
+    <button type="button" onclick="graphKey('-')">−</button>
+    <button type="button" onclick="graphKey('*')">×</button>
+    <button type="button" onclick="graphKey('/')">÷</button>
+  </div>
+
 </div>
   <button
     onclick="drawGraph()"
