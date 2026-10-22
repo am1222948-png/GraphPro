@@ -1122,16 +1122,19 @@ function solveEquation() {
     }
 
     const x = constant / coefficient;
-    const answer = Number(x.toPrecision(10));
-    const leftText = sides[0].trim();
-        const leftDisplay = leftText.replace(/\*/g, "");
-    const rightDisplay = rightText.replace(/\*/g, "");
-    const rightText = sides[1].trim();
     
-        result.innerHTML =
-      "<b>Original equation:</b> " + leftText + " = " + rightText + "<br><br>" +
-      "<b>Step 1:</b> Move the number without x to the other side.<br>" +
-      "<b>Step 2:</b> Simplify the equation to get " + coefficient + "x = " + constant + ".<br>" +
+    const x = constant / coefficient;
+    const answer = Number(x.toPrecision(10));
+
+    const leftText = sides[0].trim();
+    const rightText = sides[1].trim();
+    const leftDisplay = leftText.replace(/\*/g, "");
+    const rightDisplay = rightText.replace(/\*/g, "");
+
+    result.innerHTML =
+      "<b>Original equation:</b> " + leftDisplay + " = " + rightDisplay + "<br><br>" +
+      "<b>Step 1:</b> Subtract the constant from both sides.<br>" +
+      "<b>Step 2:</b> Simplify to get " + coefficient + "x = " + constant + ".<br>" +
       "<b>Step 3:</b> Divide both sides by " + coefficient + ".<br>" +
       "<b>Step 4:</b> x = " + constant + " ÷ " + coefficient + ".<br>" +
       "<b>Final Answer: x = " + answer + "</b>";
