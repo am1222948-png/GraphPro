@@ -1126,12 +1126,12 @@ function solveEquation() {
     const leftText = sides[0].trim();
     const rightText = sides[1].trim();
     
-    result.innerHTML =
-      "Step 1: Move all x terms to the left and numbers to the right.<br>" +
-      "Step 2: Simplify to get " + coefficient + "x = " + constant + ".<br>" +
-      "Step 3: Divide both sides by " + coefficient + ".<br>" +
-      "Step 4: x = " + constant + " ÷ " + coefficient + ".<br>" +
-      "Step 5: x = " + answer + ".<br><br>" +
+        result.innerHTML =
+      "<b>Original equation:</b> " + leftText + " = " + rightText + "<br><br>" +
+      "<b>Step 1:</b> Move the number without x to the other side.<br>" +
+      "<b>Step 2:</b> Simplify the equation to get " + coefficient + "x = " + constant + ".<br>" +
+      "<b>Step 3:</b> Divide both sides by " + coefficient + ".<br>" +
+      "<b>Step 4:</b> x = " + constant + " ÷ " + coefficient + ".<br>" +
       "<b>Final Answer: x = " + answer + "</b>";
   } catch (error) {
     result.textContent =
