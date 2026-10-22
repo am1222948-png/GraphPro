@@ -949,23 +949,71 @@ const cy = H / 2;
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, W, H);
 
+
   // Grid
   ctx.strokeStyle = "#e2e8f0";
   ctx.lineWidth = 1;
+
   for (let x = cx % scale; x < W; x += scale) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, H);
+    ctx.stroke();
   }
+
   for (let y = cy % scale; y < H; y += scale) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(W, y);
+    ctx.stroke();
   }
 
   // Axes
   ctx.strokeStyle = "#64748b";
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.moveTo(0, cy); ctx.lineTo(W, cy);
-  ctx.moveTo(cx, 0); ctx.lineTo(cx, H);
+  ctx.moveTo(0, cy);
+  ctx.lineTo(W, cy);
+  ctx.moveTo(cx, 0);
+  ctx.lineTo(cx, H);
   ctx.stroke();
+
+  // Axis number labels
+  ctx.fillStyle = "#334155";
+  ctx.font = "12px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+
+  const labelStep = scale >= 70 ? 1 :
+                    scale >= 30 ? 1 :
+                    scale >= 15 ? 2 : 5;
+
+  // X-axis labels
+  for (let px = cx; px < W; px += scale * labelStep) {
+    const value = Math.round((px - cx) / scale);
+    if (px !== cx) {
+      ctx.fillText(value, px, Math.min(cy + 5, H - 16));
+    }
+  }
+
+  for (let px = cx - scale * labelStep; px >= 0; px -= scale * labelStep) {
+    const value = Math.round((px - cx) / scale);
+    ctx.fillText(value, px, Math.min(cy + 5, H - 16));
+  }
+
+  // Y-axis labels
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+
+  for (let py = cy - scale * labelStep; py >= 0; py -= scale * labelStep) {
+    const value = Math.round((cy - py) / scale);
+    ctx.fillText(value, Math.min(cx + 5, W - 22), py);
+  }
+
+  for (let py = cy + scale * labelStep; py < H; py += scale * labelStep) {
+    const value = Math.round((cy - py) / scale);
+    ctx.fillText(value, Math.min(cx + 5, W - 22), py);
+  }
 
   // Function curve
   try {
