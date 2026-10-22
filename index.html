@@ -229,6 +229,23 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
   font-size: 15px;
   border-radius: 8px;
 }
+  
+.graph-zoom-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.graph-zoom-controls button {
+  min-width: 0;
+  padding: 10px 4px;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #1e293b;
+  color: white;
+  border: 1px solid #475569;
+}
 </style>
  <script src="https://unpkg.com/mathjs@15.2.0/lib/browser/math.js"></script>
 </head>
@@ -361,6 +378,11 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
     background:#2563eb;color:white"
   >Draw Graph</button>
 
+<div class="graph-zoom-controls">
+  <button type="button" onclick="changeGraphZoom(1.25)">＋ Zoom In</button>
+  <button type="button" onclick="changeGraphZoom(0.8)">− Zoom Out</button>
+  <button type="button" onclick="resetGraphZoom()">↺ Reset Graph</button>
+</div>
   <p id="graphStatus"
      style="color:#93c5fd;font-size:13px">
     Enter a function and tap Draw Graph.
@@ -916,11 +938,12 @@ window.graphTableEvaluate = null;
   }
 
   window.graphTableEvaluate = evaluate;
-  const W = canvas.width;
-  const H = canvas.height;
-  const scale = 35;
-  const cx = W / 2;
-  const cy = H / 2;
+  
+const W = canvas.width;
+const H = canvas.height;
+const scale = window.graphZoomScale || 35;
+const cx = W / 2;
+const cy = H / 2;
 
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = "#ffffff";
@@ -992,6 +1015,19 @@ function graphKey(value) {
     "Function: " + (input.value || "Enter a function");
 }
  
+window.graphZoomScale = 35;
+
+function changeGraphZoom(factor) {
+  window.graphZoomScale =
+    Math.max(5, Math.min(200, window.graphZoomScale * factor));
+
+  drawGraph();
+}
+
+function resetGraphZoom() {
+  window.graphZoomScale = 35;
+  drawGraph();
+  }
 function generateXYTable() {
   const expressionInput = document.getElementById("graphExpression");
   const startInput = document.getElementById("tableStartX");
