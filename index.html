@@ -1130,7 +1130,9 @@ const leftDisplay = leftText.replace(/\*/g, "");
 const rightDisplay = rightText.replace(/\*/g, "");
     result.innerHTML =
       "<b>Original equation:</b> " + leftDisplay + " = " + rightDisplay + "<br><br>" +
-      "<b>Step 1:</b> Subtract the constant from both sides.<br>" +
+      "<b>Step 1:</b> " +
+(leftText.includes("-") ? "Add the constant to both sides." : "Subtract the constant from both sides.") +
+"<br>" +
       "<b>Step 2:</b> Simplify to get " + coefficient + "x = " + constant + ".<br>" +
       "<b>Step 3:</b> Divide both sides by " + coefficient + ".<br>" +
       "<b>Step 4:</b> x = " + constant + " ÷ " + coefficient + ".<br>" +
