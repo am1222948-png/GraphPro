@@ -156,6 +156,41 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
   html{scroll-behavior:auto}
   button{transition:none}
 }
+  
+.calculator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calculator-layout .utility-buttons,
+.calculator-layout .scientific-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calculator-layout .number-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calculator-layout .operator-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.calculator-layout button {
+  min-width: 0;
+}
+
+.calculator-layout .equal {
+  grid-column: span 1;
+  grid-row: auto;
+  min-height: 0;
+}
 </style>
  <script src="https://unpkg.com/mathjs@15.2.0/lib/browser/math.js"></script>
 </head>
@@ -172,48 +207,57 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
 </div>
 <input id="display" type="text" inputmode="none" autocomplete="off" placeholder="0" aria-label="Calculator display" readonly>
 <div id="preview" aria-live="polite">Ready to calculate</div>
-<div class="keys">
-<button class="clear" onclick="clearAll()">AC</button>
-<button class="op" onclick="del()">DEL</button>
-<button class="fn" onclick="insert('(')">(</button>
-<button class="fn" onclick="insert(')')">)</button>
-<button class="op" onclick="insert('÷')">÷</button>
 
-<button class="fn" onclick="func('sin')">sin</button>
-<button class="fn" onclick="func('cos')">cos</button>
-<button class="fn" onclick="func('tan')">tan</button>
-<button class="fn" onclick="insert('π')">π</button>
-<button class="op" onclick="insert('×')">×</button>
+<div class="keys calculator-layout">
 
-<button class="fn" onclick="func('sqrt')">√</button>
-<button class="fn" onclick="square()">x²</button>
-<button class="fn" onclick="insert('^')">xʸ</button>
-<button class="fn" onclick="func('log')">log</button>
-<button class="op" onclick="insert('−')">−</button>
+  <div class="utility-buttons">
+    <button class="clear" onclick="clearAll()">AC</button>
+    <button class="op" onclick="del()">DEL</button>
+    <button class="fn" onclick="insert('(')">(</button>
+    <button class="fn" onclick="insert(')')">)</button>
+  </div>
 
-<button class="fn" onclick="func('ln')">ln</button>
-<button class="fn" onclick="insert('!')">n!</button>
-<button onclick="insert('7')">7</button>
-<button onclick="insert('8')">8</button>
-<button onclick="insert('9')">9</button>
+  <div class="scientific-buttons">
+    <button class="fn" onclick="func('sin')">sin</button>
+    <button class="fn" onclick="func('cos')">cos</button>
+    <button class="fn" onclick="func('tan')">tan</button>
+    <button class="fn" onclick="func('sqrt')">√</button>
+    <button class="fn" onclick="square()">x²</button>
+    <button class="fn" onclick="insert('^')">xʸ</button>
+    <button class="fn" onclick="func('log')">log</button>
+    <button class="fn" onclick="func('ln')">ln</button>
+    <button class="fn" onclick="insert('π')">π</button>
+    <button class="fn" onclick="insert('!')">n!</button>
+    <button class="fn" onclick="insert('Ans')">Ans</button>
+    <button class="fn" onclick="insert('%')">%</button>
+    <button class="fn" onclick="insert('±')">±</button>
+    <button class="fn" onclick="insert('×10^(')">EXP</button>
+  </div>
 
-<button class="fn" onclick="insert('Ans')">Ans</button>
-<button onclick="insert('4')">4</button>
-<button onclick="insert('5')">5</button>
-<button onclick="insert('6')">6</button>
-<button class="op" onclick="insert('+')">+</button>
+  <div class="number-buttons">
+    <button onclick="insert('7')">7</button>
+    <button onclick="insert('8')">8</button>
+    <button onclick="insert('9')">9</button>
+    <button onclick="insert('4')">4</button>
+    <button onclick="insert('5')">5</button>
+    <button onclick="insert('6')">6</button>
+    <button onclick="insert('1')">1</button>
+    <button onclick="insert('2')">2</button>
+    <button onclick="insert('3')">3</button>
+    <button onclick="insert('0')">0</button>
+    <button onclick="insert('.')">.</button>
+  </div>
 
-<button class="fn" onclick="insert('%')">%</button>
-<button onclick="insert('1')">1</button>
-<button onclick="insert('2')">2</button>
-<button onclick="insert('3')">3</button>
-<button class="equal" onclick="calculate()" style="grid-row:span 2;min-height:104px">=</button>
+  <div class="operator-buttons">
+    <button class="op" onclick="insert('÷')">÷</button>
+    <button class="op" onclick="insert('×')">×</button>
+    <button class="op" onclick="insert('−')">−</button>
+    <button class="op" onclick="insert('+')">+</button>
+    <button class="equal" onclick="calculate()">=</button>
+  </div>
 
-<button class="fn" onclick="insert('±')">±</button>
-<button onclick="insert('0')">0</button>
-<button onclick="insert('.')">.</button>
-<button class="fn" onclick="insert('×10^(')">EXP</button>
 </div>
+
 </section>
  <section class="extra" id="graphSection">
   <h2>📈 Graphing Calculator</h2>
