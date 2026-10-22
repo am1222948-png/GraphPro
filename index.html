@@ -1123,7 +1123,8 @@ function solveEquation() {
 
     const x = constant / coefficient;
     const answer = Number(x.toPrecision(10));
-
+    const leftText = sides[0].trim();
+    const rightText = sides[1].trim();
     
     result.innerHTML =
       "Step 1: Move all x terms to the left and numbers to the right.<br>" +
