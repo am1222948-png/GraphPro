@@ -1127,10 +1127,9 @@ function solveEquation() {
     const answer = Number(x.toPrecision(10));
 
     const leftText = sides[0].trim();
-    const rightText = sides[1].trim();
-    const leftDisplay = leftText.replace(/\*/g, "");
-    const rightDisplay = rightText.replace(/\*/g, "");
-
+const rightText = sides[1].trim();
+const leftDisplay = leftText.replace(/\*/g, "");
+const rightDisplay = rightText.replace(/\*/g, "");
     result.innerHTML =
       "<b>Original equation:</b> " + leftDisplay + " = " + rightDisplay + "<br><br>" +
       "<b>Step 1:</b> Subtract the constant from both sides.<br>" +
