@@ -246,6 +246,42 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
   color: white;
   border: 1px solid #475569;
 }
+
+/* Homepage quick access and tool search */
+.tool-hub{
+  margin:0 0 20px;
+  padding:18px;
+  border:1px solid rgba(79,140,255,.28);
+  border-radius:20px;
+  background:linear-gradient(145deg,rgba(20,34,62,.96),rgba(12,20,38,.98));
+  box-shadow:0 16px 38px rgba(0,0,0,.18);
+}
+.tool-hub h2{margin:0 0 6px;font-size:21px;letter-spacing:-.3px}
+.tool-hub-intro{margin:0 0 14px;color:#a7b4ce;font-size:13px;line-height:1.5}
+.featured-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.featured-tool{
+  display:flex;align-items:center;gap:9px;text-align:left;min-height:65px;
+  padding:12px;border:1px solid rgba(111,151,226,.2);border-radius:13px;
+  background:linear-gradient(145deg,#213654,#17253f);color:#f4f7ff;
+}
+.featured-tool .tool-icon{font-size:23px;flex:0 0 auto}
+.featured-tool .tool-name{font-size:13px;line-height:1.35}
+.tool-search-label{display:block;margin:16px 0 7px;color:#dbeafe;font-size:13px;font-weight:700}
+#toolSearch{
+  width:100%;min-height:47px;padding:12px 14px;border:1px solid rgba(133,162,216,.3);
+  border-radius:12px;background:#080f20;color:#f4f7ff;font-size:15px;outline:none;
+}
+#toolSearch::placeholder{color:#71819e}
+#toolSearch:focus{border-color:#5b8cff;box-shadow:0 0 0 3px rgba(79,140,255,.12)}
+#toolSearchResults{display:grid;gap:7px;margin-top:9px}
+.tool-result{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:43px;
+  padding:10px 12px;text-align:left;border-radius:10px;background:#111e34;border:1px solid rgba(148,163,184,.15);
+}
+.tool-result span:last-child{color:#8db7ff;font-size:18px}
+#toolSearchStatus{min-height:17px;margin:8px 2px 0;color:#93c5fd;font-size:12px}
+@media(max-width:360px){.tool-hub{padding:13px}.featured-tools{gap:7px}.featured-tool{padding:9px;gap:7px}.featured-tool .tool-icon{font-size:20px}.featured-tool .tool-name{font-size:12px}}
+
 </style>
  <script src="https://unpkg.com/mathjs@15.2.0/lib/browser/math.js"></script>
 </head>
@@ -255,7 +291,22 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
 <p>Free Scientific Calculator</p>
 </header>
 <main>
-<section class="calculator">
+<nav class="tool-hub" aria-label="GraphPro quick access">
+  <h2>Find Your Math Tool</h2>
+  <p class="tool-hub-intro">Open a popular calculator below, or search all GraphPro tools.</p>
+  <div class="featured-tools">
+    <button type="button" class="featured-tool" data-tool-target="calculatorSection"><span class="tool-icon">🧮</span><span class="tool-name">Scientific Calculator</span></button>
+    <button type="button" class="featured-tool" data-tool-target="graphSection"><span class="tool-icon">📈</span><span class="tool-name">Graphing Calculator</span></button>
+    <button type="button" class="featured-tool" data-tool-target="equationSolverSection"><span class="tool-icon">➗</span><span class="tool-name">Equation Solver</span></button>
+    <button type="button" class="featured-tool" data-tool-target="derivativeCalculator"><span class="tool-icon">∂</span><span class="tool-name">Derivative Calculator</span></button>
+  </div>
+  <label class="tool-search-label" for="toolSearch">Search all tools</label>
+  <input id="toolSearch" type="search" placeholder="Try: matrix, roots, percentage..." autocomplete="off" aria-label="Search all GraphPro tools">
+  <div id="toolSearchResults" hidden></div>
+  <p id="toolSearchStatus" aria-live="polite">10 tools available to search.</p>
+</nav>
+
+<section class="calculator" id="calculatorSection">
 <div class="mode">
 <button id="deg" class="active" onclick="setAngle('DEG')">DEG</button>
 <button id="rad" onclick="setAngle('RAD')">RAD</button>
@@ -717,7 +768,7 @@ Enter a function in the Graph section first.
  
  
  
-<section class="extra">
+<section class="extra" id="historySection">
 <h2>Calculation History</h2>
 <div id="history">Your recent calculations will appear here.</div>
 </section>
@@ -2134,5 +2185,77 @@ function calculateThirdDerivative() {
   }
 }
 </script>
+
+<script>
+(function () {
+  const tools = [
+    { name: "Scientific Calculator", target: "calculatorSection", icon: "🧮", keywords: "basic scientific sin cos tan square root log ln factorial" },
+    { name: "Graphing Calculator", target: "graphSection", icon: "📈", keywords: "graph plot functions zoom draw graph" },
+    { name: "X-Y Value Table", target: "xyTableSection", icon: "📊", keywords: "table x y values function coordinates" },
+    { name: "Roots Calculator", target: "rootsSection", icon: "🎯", keywords: "roots zero x axis intercept" },
+    { name: "Equation Solver", target: "equationSolverSection", icon: "➗", keywords: "linear solve equation unknown x" },
+    { name: "Quadratic Equation Solver", target: "quadraticSolverSection", icon: "📐", keywords: "quadratic polynomial ax2 bx c" },
+    { name: "Percentage & Ratio Calculator", target: "percentageRatioSection", icon: "%", keywords: "percentage percent increase decrease ratio simplify" },
+    { name: "Matrix Calculator", target: "matrixCalculator", icon: "▦", keywords: "matrix addition subtraction multiplication determinant inverse" },
+    { name: "Derivative Calculator", target: "derivativeCalculator", icon: "∂", keywords: "derivative first second third calculus" },
+    { name: "Calculation History", target: "historySection", icon: "🕘", keywords: "history previous calculations answers" }
+  ];
+
+  const search = document.getElementById("toolSearch");
+  const results = document.getElementById("toolSearchResults");
+  const status = document.getElementById("toolSearchStatus");
+
+  function openTool(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  document.querySelectorAll("[data-tool-target]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      openTool(button.getAttribute("data-tool-target"));
+    });
+  });
+
+  function renderSearch() {
+    const query = search.value.trim().toLowerCase();
+    results.replaceChildren();
+
+    if (!query) {
+      results.hidden = true;
+      status.textContent = tools.length + " tools available to search.";
+      return;
+    }
+
+    const matches = tools.filter(function (tool) {
+      return (tool.name + " " + tool.keywords).toLowerCase().includes(query);
+    });
+
+    results.hidden = false;
+    matches.forEach(function (tool) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "tool-result";
+
+      const label = document.createElement("span");
+      label.textContent = tool.icon + "  " + tool.name;
+      const arrow = document.createElement("span");
+      arrow.textContent = "→";
+      button.append(label, arrow);
+      button.addEventListener("click", function () {
+        openTool(tool.target);
+      });
+      results.appendChild(button);
+    });
+
+    status.textContent = matches.length
+      ? matches.length + (matches.length === 1 ? " tool found." : " tools found.")
+      : "No tools found. Try another word, such as graph or matrix.";
+  }
+
+  search.addEventListener("input", renderSearch);
+})();
+</script>
+
 </body>
   </html>
