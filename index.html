@@ -1116,8 +1116,24 @@ function drawGraph() {
 }
 
  
+
+let activeGraphInput = "graphExpression";
+
+document.querySelectorAll(
+  "#graphExpression, #graphExpression2, #graphExpression3"
+).forEach(function (field) {
+  field.addEventListener("focus", function () {
+    activeGraphInput = field.id;
+  });
+
+  field.addEventListener("click", function () {
+    activeGraphInput = field.id;
+  });
+});
+
 function graphKey(value) {
-  const input = document.getElementById("graphExpression");
+  const input = document.getElementById(activeGraphInput);
+
   if (!input) return;
 
   if (value === "clear") {
@@ -1128,8 +1144,13 @@ function graphKey(value) {
     input.value += value;
   }
 
-  document.getElementById("graphStatus").textContent =
-    "Function: " + (input.value || "Enter a function");
+  input.focus();
+
+  const status = document.getElementById("graphStatus");
+  if (status) {
+    status.textContent =
+      "Function: " + (input.value || "Enter a function");
+  }
 }
  
 window.graphZoomScale = 35;
