@@ -863,117 +863,150 @@ display.addEventListener('keydown',e=>{
  if(e.key==='Enter'){e.preventDefault();calculate()}
  if(e.key==='Escape')clearAll();
 });
- function drawGraph() {
+ 
+function drawGraph() {
   const input = document.getElementById("graphExpression");
   const canvas = document.getElementById("graphCanvas");
   const status = document.getElementById("graphStatus");
   const ctx = canvas.getContext("2d");
 
-  const expression = input.value.trim()
-    .toLowerCase()
-    .replace(/\s+/g, "")
-    .replace(/×/g, "*")
-    .replace(/÷/g, "/")
-    .replace(/\^/g, "**");
+  const graphInputs = [
+    document.getElementById("graphExpression"),
+    document.getElementById("graphExpression2"),
+    document.getElementById("graphExpression3")
+  ];
 
-  if (!expression) {
-    status.textContent = "Please enter a function, e.g. x^2";
-    return;
-  }
+  const graphColors = ["#2563eb", "#dc2626", "#16a34a"];
+  const graphFunctions = [];
 
-  // Safe mathematical expression parser:
-  // only numbers, x, arithmetic and selected math functions.
-  let tokens;
-  try {
-    tokens = expression.match(
+  function prepareExpression(raw) {
+    const expression = raw.trim()
+      .toLowerCase()
+      .replace(/\s+/g, "")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .replace(/\^/g, "**");
+
+    const tokens = expression.match(
       /(?:\d+(?:\.\d*)?|\.\d+)|(?:sin|cos|tan|sqrt|log|ln|abs|pi|x)|(?:\*\*|[+\-*/()%])/g
     );
 
     if (!tokens || tokens.join("") !== expression) {
-      throw new Error("Unsupported expression");
+      throw new Error("Invalid expression");
     }
-  } catch {
-    status.textContent = "Invalid expression. Try x^2 or 2*x+3.";
+
+    function evaluate(x) {
+      let pos = 0;
+
+      function parseExpr(minPrec = 0) {
+        const token = tokens[pos++];
+        if (token === undefined) throw new Error("Incomplete expression");
+
+        let value;
+
+        if (!isNaN(Number(token))) {
+          value = Number(token);
+        } else if (token === "x") {
+          value = x;
+        } else if (token === "pi") {
+          value = Math.PI;
+        } else if (token === "+" || token === "-") {
+          value = parseExpr(25);
+          if (token === "-") value = -value;
+        } else if (token === "(") {
+          value = parseExpr(0);
+          if (tokens[pos++] !== ")") throw new Error("Missing bracket");
+        } else if (
+          ["sin", "cos", "tan", "sqrt", "log", "ln", "abs"].includes(token)
+        ) {
+          if (tokens[pos++] !== "(") throw new Error("Use function(value)");
+
+          const arg = parseExpr(0);
+          if (tokens[pos++] !== ")") throw new Error("Missing bracket");
+
+          if (token === "sin") value = Math.sin(arg);
+          if (token === "cos") value = Math.cos(arg);
+          if (token === "tan") value = Math.tan(arg);
+          if (token === "sqrt") value = Math.sqrt(arg);
+          if (token === "log") value = Math.log10(arg);
+          if (token === "ln") value = Math.log(arg);
+          if (token === "abs") value = Math.abs(arg);
+        } else {
+          throw new Error("Invalid expression");
+        }
+
+        while (pos < tokens.length) {
+          const op = tokens[pos];
+          const prec =
+            op === "+" || op === "-" ? 10 :
+            op === "*" || op === "/" ? 20 :
+            op === "**" ? 30 : -1;
+
+          if (prec <= minPrec) break;
+          pos++;
+
+          const right = parseExpr(op === "**" ? prec - 1 : prec);
+
+          if (op === "+") value += right;
+          if (op === "-") value -= right;
+          if (op === "*") value *= right;
+          if (op === "/") value /= right;
+          if (op === "**") value = Math.pow(value, right);
+        }
+
+        return value;
+      }
+
+      const result = parseExpr();
+
+      if (pos !== tokens.length || !Number.isFinite(result)) {
+        throw new Error("Invalid result");
+      }
+
+      return result;
+    }
+
+    // Validate the expression before drawing.
+    evaluate(1);
+
+    return { evaluate, expression };
+  }
+
+  // Prepare each entered function independently.
+  for (let i = 0; i < graphInputs.length; i++) {
+    const raw = graphInputs[i]?.value.trim();
+    if (!raw) continue;
+
+    try {
+      graphFunctions.push({
+        ...prepareExpression(raw),
+        color: graphColors[i],
+        label: raw
+      });
+    } catch (error) {
+      status.textContent = "Check function " + (i + 1) + ": " + raw;
+      return;
+    }
+  }
+
+  if (graphFunctions.length === 0) {
+    window.graphTableEvaluate = null;
+    status.textContent = "Please enter at least one function, e.g. x^2";
     return;
   }
-window.graphTableEvaluate = null;
-  function evaluate(x) {
-    let pos = 0;
 
-    function parseExpr(minPrec = 0) {
-      let token = tokens[pos++];
-      if (token === undefined) throw new Error("Incomplete expression");
+  // Keep the X-Y table linked to the first function.
+  window.graphTableEvaluate = graphFunctions[0].evaluate;
 
-      let value;
-
-      if (!isNaN(Number(token))) {
-        value = Number(token);
-      } else if (token === "x") {
-        value = x;
-      } else if (token === "pi") {
-        value = Math.PI;
-      } else if (token === "+" || token === "-") {
-        value = parseExpr(25);
-        if (token === "-") value = -value;
-      } else if (token === "(") {
-        value = parseExpr(0);
-        if (tokens[pos++] !== ")") throw new Error("Missing bracket");
-      } else if (["sin","cos","tan","sqrt","log","ln","abs"].includes(token)) {
-        if (tokens[pos++] !== "(") throw new Error("Use function(value)");
-        const arg = parseExpr(0);
-        if (tokens[pos++] !== ")") throw new Error("Missing bracket");
-
-        if (token === "sin") value = Math.sin(arg);
-        if (token === "cos") value = Math.cos(arg);
-        if (token === "tan") value = Math.tan(arg);
-        if (token === "sqrt") value = Math.sqrt(arg);
-        if (token === "log") value = Math.log10(arg);
-        if (token === "ln") value = Math.log(arg);
-        if (token === "abs") value = Math.abs(arg);
-      } else {
-        throw new Error("Invalid expression");
-      }
-
-      while (pos < tokens.length) {
-        const op = tokens[pos];
-        const prec = op === "+" || op === "-" ? 10 :
-                     op === "*" || op === "/" ? 20 :
-                     op === "**" ? 30 : -1;
-
-        if (prec <= minPrec) break;
-        pos++;
-
-        const right = parseExpr(op === "**" ? prec - 1 : prec);
-
-        if (op === "+") value += right;
-        if (op === "-") value -= right;
-        if (op === "*") value *= right;
-        if (op === "/") value /= right;
-        if (op === "**") value = Math.pow(value, right);
-      }
-
-      return value;
-    }
-
-    const result = parseExpr();
-    if (pos !== tokens.length || !Number.isFinite(result)) {
-      throw new Error("Invalid result");
-    }
-    return result;
-  }
-
-  window.graphTableEvaluate = evaluate;
-  
-const W = canvas.width;
-const H = canvas.height;
-const scale = window.graphZoomScale || 35;
-const cx = W / 2;
-const cy = H / 2;
+  const W = canvas.width;
+  const H = canvas.height;
+  const scale = window.graphZoomScale || 35;
+  const cx = W / 2;
+  const cy = H / 2;
 
   ctx.clearRect(0, 0, W, H);
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, W, H);
-
 
   // Grid
   ctx.strokeStyle = "#e2e8f0";
@@ -1013,7 +1046,6 @@ const cy = H / 2;
                     scale >= 30 ? 1 :
                     scale >= 15 ? 2 : 5;
 
-  // X-axis labels
   for (let px = cx; px < W; px += scale * labelStep) {
     const value = Math.round((px - cx) / scale);
     if (px !== cx) {
@@ -1026,7 +1058,6 @@ const cy = H / 2;
     ctx.fillText(value, px, Math.min(cy + 5, H - 16));
   }
 
-  // Y-axis labels
   ctx.textAlign = "left";
   ctx.textBaseline = "middle";
 
@@ -1040,16 +1071,25 @@ const cy = H / 2;
     ctx.fillText(value, Math.min(cx + 5, W - 22), py);
   }
 
-  // Function curve
-  try {
-    ctx.strokeStyle = "#2563eb";
+  // Draw all entered functions.
+  for (const fn of graphFunctions) {
+    ctx.strokeStyle = fn.color;
     ctx.lineWidth = 3;
     ctx.beginPath();
+
     let started = false;
 
     for (let px = 0; px < W; px++) {
       const x = (px - cx) / scale;
-      const y = evaluate(x);
+      let y;
+
+      try {
+        y = fn.evaluate(x);
+      } catch (error) {
+        started = false;
+        continue;
+      }
+
       const py = cy - y * scale;
 
       if (!Number.isFinite(py) || py < -H * 3 || py > H * 4) {
@@ -1066,11 +1106,15 @@ const cy = H / 2;
     }
 
     ctx.stroke();
-    status.textContent = "Graph drawn: y = " + input.value;
-  } catch (error) {
-    status.textContent = "Could not draw graph. Check your function.";
   }
- }
+
+  status.textContent = "Graphs drawn: " +
+    graphFunctions.map((fn, i) =>
+      (i === 0 ? "Blue" : i === 1 ? "Red" : "Green") +
+      " y = " + fn.label
+    ).join(" | ");
+}
+
  
 function graphKey(value) {
   const input = document.getElementById("graphExpression");
