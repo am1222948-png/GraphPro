@@ -1181,6 +1181,85 @@ function resetGraphZoom() {
   window.graphZoomScale = 35;
   drawGraph();
   }
+  
+function findGraphRoots() {
+  const status = document.getElementById("rootsStatus");
+
+  if (typeof window.graphTableEvaluate !== "function") {
+    status.textContent = "Please draw your first graph function first.";
+    return;
+  }
+
+  const evaluate = window.graphTableEvaluate;
+  const roots = [];
+  const minX = -100;
+  const maxX = 100;
+  const step = 0.05;
+  const tolerance = 0.0001;
+
+  try {
+    let previousX = minX;
+    let previousY = evaluate(previousX);
+
+    for (let x = minX + step; x <= maxX; x += step) {
+      const y = evaluate(x);
+
+      if (Math.abs(y) < tolerance) {
+        if (!roots.some(root => Math.abs(root - x) < 0.1)) {
+          roots.push(x);
+        }
+      } else if (
+        Number.isFinite(previousY) &&
+        Number.isFinite(y) &&
+        previousY * y < 0
+      ) {
+        let left = previousX;
+        let right = x;
+        let leftY = previousY;
+
+        for (let i = 0; i < 40; i++) {
+          const mid = (left + right) / 2;
+          const midY = evaluate(mid);
+
+          if (Math.abs(midY) < tolerance) {
+            left = mid;
+            right = mid;
+            break;
+          }
+
+          if (leftY * midY <= 0) {
+            right = mid;
+          } else {
+            left = mid;
+            leftY = midY;
+          }
+        }
+
+        const root = (left + right) / 2;
+
+        if (!roots.some(r => Math.abs(r - root) < 0.1)) {
+          roots.push(root);
+        }
+      }
+
+      previousX = x;
+      previousY = y;
+    }
+
+    roots.sort((a, b) => a - b);
+
+    if (roots.length === 0) {
+      status.textContent =
+        "No roots detected in the range -100 to 100. Some roots may not be detected.";
+    } else {
+      status.textContent =
+        "Approximate roots (y = 0): " +
+        roots.map(x => "x ≈ " + Number(x.toFixed(4))).join(", ");
+    }
+  } catch (error) {
+    status.textContent = "Could not calculate roots. Check your graph function.";
+  }
+}
 function generateXYTable() {
   const expressionInput = document.getElementById("graphExpression");
   const startInput = document.getElementById("tableStartX");
