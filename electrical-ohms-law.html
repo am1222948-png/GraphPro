@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1120">
+<meta name="description" content="Free GraphPro Ohm's Law Calculator. Calculate voltage, current, resistance and electrical power.">
+<title>Ohm's Law Calculator | GraphPro</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0b1120;
+  --card: #151f33;
+  --input: #0b1425;
+  --border: #2b3b55;
+  --text: #edf4ff;
+  --muted: #a8b7cc;
+  --blue: #38bdf8;
+  --green: #34d399;
+  --red: #f87171;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, sans-serif;
+}
+
+header {
+  max-width: 850px;
+  margin: 0 auto 25px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 30px;
+  font-weight: bold;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+header p {
+  color: var(--muted);
+  margin: 8px 0;
+}
+
+.container {
+  max-width: 850px;
+  margin: auto;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 21px;
+}
+
+.intro {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--input);
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--blue);
+}
+
+.unit {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+button,
+.home-button {
+  display: inline-block;
+  border: none;
+  border-radius: 9px;
+  padding: 13px 18px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+.primary {
+  background: var(--blue);
+  color: #07111f;
+}
+
+.secondary {
+  background: #26364f;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.home-button {
+  background: #26364f;
+  color: var(--text);
+  border: 1px solid var(--border);
+  margin-top: 10px;
+}
+
+.result {
+  display: none;
+  border: 1px solid #226d5a;
+  background: #102b2a;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.result-item {
+  padding: 15px;
+  background: rgba(0,0,0,0.18);
+  border-radius: 10px;
+  min-width: 0;
+}
+
+.result-item .name {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.result-item .value {
+  color: var(--green);
+  font-size: 22px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+.message {
+  margin-top: 15px;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.error {
+  color: var(--red);
+}
+
+.success {
+  color: var(--green);
+}
+
+.formula {
+  background: var(--input);
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: 10px;
+  line-height: 1.9;
+  margin-top: 12px;
+}
+
+.formula strong {
+  color: var(--blue);
+}
+
+footer {
+  max-width: 850px;
+  margin: 30px auto 10px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 13px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  .fields,
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .logo {
+    font-size: 27px;
+  }
+
+  button,
+  .home-button {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">⚡ GraphPro</div>
+  <h1>Ohm's Law Calculator</h1>
+  <p>Calculate Voltage, Current, Resistance and Power</p>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>Electrical Calculator</h2>
+
+    <p class="intro">
+      Enter any two suitable known values. Leave the other fields empty
+      and press Calculate. GraphPro will calculate the remaining values.
+    </p>
+
+    <div class="fields">
+
+      <div class="field">
+        <label for="voltage">Voltage (V)</label>
+        <input id="voltage" type="number" min="0" step="any"
+          placeholder="Enter voltage">
+        <span class="unit">Unit: Volts (V)</span>
+      </div>
+
+      <div class="field">
+        <label for="current">Current (I)</label>
+        <input id="current" type="number" min="0" step="any"
+          placeholder="Enter current">
+        <span class="unit">Unit: Amperes (A)</span>
+      </div>
+
+      <div class="field">
+        <label for="resistance">Resistance (R)</label>
+        <input id="resistance" type="number" min="0" step="any"
+          placeholder="Enter resistance">
+        <span class="unit">Unit: Ohms (Ω)</span>
+      </div>
+
+      <div class="field">
+        <label for="power">Power (P)</label>
+        <input id="power" type="number" min="0" step="any"
+          placeholder="Enter power">
+        <span class="unit">Unit: Watts (W)</span>
+      </div>
+
+    </div>
+
+    <div class="buttons">
+      <button class="primary" id="calculateBtn" type="button">
+        Calculate
+      </button>
+
+      <button class="secondary" id="clearBtn" type="button">
+        Clear All
+      </button>
+    </div>
+
+    <div id="message" class="message" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="card result" id="resultCard" aria-live="polite">
+    <h2>Calculation Results</h2>
+
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="name">Voltage</div>
+        <div class="value" id="voltageResult">—</div>
+      </div>
+
+      <div class="result-item">
+        <div class="name">Current</div>
+        <div class="value" id="currentResult">—</div>
+      </div>
+
+      <div class="result-item">
+        <div class="name">Resistance</div>
+        <div class="value" id="resistanceResult">—</div>
+      </div>
+
+      <div class="result-item">
+        <div class="name">Power</div>
+        <div class="value" id="powerResult">—</div>
+      </div>
+    </div>
+
+    <div class="formula" id="formulaResult"></div>
+
+    <div class="buttons">
+      <button class="secondary" id="copyBtn" type="button">
+        Copy Results
+      </button>
+    </div>
+
+    <div id="copyMessage" class="message" role="status"></div>
+  </section>
+
+  <section class="card">
+    <h2>Ohm's Law Formulas</h2>
+
+    <div class="formula">
+      <strong>Voltage:</strong> V = I × R<br>
+      <strong>Current:</strong> I = V ÷ R<br>
+      <strong>Resistance:</strong> R = V ÷ I<br>
+      <strong>Power:</strong> P = V × I<br>
+      <strong>Power:</strong> P = I² × R<br>
+      <strong>Power:</strong> P = V² ÷ R
+    </div>
+
+    <p class="intro">
+      These formulas apply to basic DC calculations and suitable
+      resistive loads. AC circuits involving power factor, reactive
+      components or non-sinusoidal waveforms require additional calculations.
+    </p>
+  </section>
+
+  <div style="text-align:center">
+    <a class="home-button" href="./index.html">← Back to GraphPro Home</a>
+  </div>
+
+</main>
+
+<footer>
+  GraphPro Calculator<br>
+  Free Electrical Calculation Tool
+</footer>
+
+<script>
+"use strict";
+
+const fields = {
+  voltage: document.getElementById("voltage"),
+  current: document.getElementById("current"),
+  resistance: document.getElementById("resistance"),
+  power: document.getElementById("power")
+};
+
+const message = document.getElementById("message");
+const resultCard = document.getElementById("resultCard");
+
+function formatNumber(value) {
+  if (!Number.isFinite(value)) return "Not available";
+  if (Object.is(value, -0) || value === 0) return "0";
+  return Number(value.toPrecision(8)).toString();
+}
+
+function readInputs() {
+  const values = {};
+
+  for (const key of Object.keys(fields)) {
+    const raw = fields[key].value.trim();
+
+    if (raw === "") {
+      values[key] = null;
+      continue;
+    }
+
+    const number = Number(raw);
+
+    if (!Number.isFinite(number) || number < 0) {
+      throw new Error(
+        "Please enter valid non-negative numbers in the fields you use."
+      );
+    }
+
+    values[key] = number;
+  }
+
+  const supplied = Object.values(values).filter(v => v !== null).length;
+
+  if (supplied < 2) {
+    throw new Error("Please enter at least two known values.");
+  }
+
+  if (supplied > 2) {
+    throw new Error(
+      "Please enter exactly two known values. Clear the other fields."
+    );
+  }
+
+  return values;
+}
+
+function calculateValues(input) {
+  const { voltage: V, current: I, resistance: R, power: P } = input;
+
+  let v, i, r, p, formula;
+
+  if (V !== null && I !== null) {
+    v = V;
+    i = I;
+    p = V * I;
+
+    if (V > 0 && I > 0) {
+      r = V / I;
+      formula = "R = V ÷ I; P = V × I";
+    } else if (V === 0 && I > 0) {
+      r = 0;
+      formula = "R = V ÷ I; P = V × I";
+    } else if (V > 0 && I === 0) {
+      r = null;
+      formula = "I = 0 A with V > 0 is an open-circuit condition; finite R cannot be determined.";
+    } else {
+      r = null;
+      formula = "V = 0 and I = 0 do not uniquely determine resistance.";
+    }
+
+  } else if (V !== null && R !== null) {
+    v = V;
+    r = R;
+
+    if (R === 0) {
+      if (V > 0) {
+        throw new Error(
+          "A positive voltage across zero resistance implies an ideal short circuit. Current and power cannot be calculated as finite values."
+        );
+      }
+
+      throw new Error(
+        "Zero voltage and zero resistance do not determine a unique current."
+      );
+    }
+
+    i = V / R;
+    p = V * i;
+    formula = "I = V ÷ R; P = V² ÷ R";
+
+  } else if (I !== null && R !== null) {
+    i = I;
+    r = R;
+    v = I * R;
+    p = I * I * R;
+    formula = "V = I × R; P = I² × R";
+
+  } else if (V !== null && P !== null) {
+    v = V;
+    p = P;
+
+    if (V === 0) {
+      if (P > 0) {
+        throw new Error("Positive power with zero voltage is inconsistent with this resistive DC model.");
+      }
+
+      throw new Error(
+        "Zero voltage and zero power do not determine current or resistance."
+      );
+    }
+
+    i = P / V;
+    r = P === 0 ? null : (V * V) / P;
+    formula = "I = P ÷ V; R = V² ÷ P";
+
+  } else if (I !== null && P !== null) {
+    i = I;
+    p = P;
+
+    if (I === 0) {
+      if (P > 0) {
+        throw new Error("Positive power with zero current is inconsistent with this resistive DC model.");
+      }
+
+      throw new Error(
+        "Zero current and zero power do not determine voltage or resistance."
+      );
+    }
+
+    v = P / I;
+    r = P === 0 ? null : P / (I * I);
+    formula = "V = P ÷ I; R = P ÷ I²";
+
+  } else if (R !== null && P !== null) {
+    r = R;
+    p = P;
+
+    if (R === 0) {
+      if (P > 0) {
+        throw new Error("Positive power with zero resistance is inconsistent with a finite resistive DC circuit.");
+      }
+
+      throw new Error(
+        "Zero resistance and zero power do not determine a unique voltage or current."
+      );
+    }
+
+    i = Math.sqrt(P / R);
+    v = Math.sqrt(P * R);
+    formula = "I = √(P ÷ R); V = √(P × R)";
+
+  } else {
+    throw new Error(
+      "Please enter any two of these values: V, I, R or P."
+    );
+  }
+
+  const results = { voltage: v, current: i, resistance: r, power: p };
+
+  for (const [key, value] of Object.entries(results)) {
+    if (value !== null && (!Number.isFinite(value) || value < 0)) {
+      throw new Error("The result is outside the supported numeric range.");
+    }
+
+    if (value === undefined) {
+      results[key] = null;
+    }
+  }
+
+  return { results, formula };
+}
+
+function displayResults(data) {
+  const { results, formula } = data;
+
+  const units = {
+    voltage: " V",
+    current: " A",
+    resistance: " Ω",
+    power: " W"
+  };
+
+  for (const key of Object.keys(fields)) {
+    const value = results[key];
+
+    document.getElementById(key + "Result").textContent =
+      value === null ? "Undetermined" : formatNumber(value) + units[key];
+  }
+
+  document.getElementById("formulaResult").innerHTML =
+    "<strong>Formula used:</strong> " + formula.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  resultCard.style.display = "block";
+  message.className = "message success";
+  message.textContent = "Calculation completed.";
+}
+
+document.getElementById("calculateBtn").addEventListener("click", function () {
+  message.textContent = "";
+  message.className = "message";
+  document.getElementById("copyMessage").textContent = "";
+
+  try {
+    const input = readInputs();
+    const data = calculateValues(input);
+    displayResults(data);
+  } catch (error) {
+    resultCard.style.display = "none";
+    message.className = "message error";
+    message.textContent = error.message;
+  }
+});
+
+document.getElementById("clearBtn").addEventListener("click", function () {
+  for (const field of Object.values(fields)) {
+    field.value = "";
+  }
+
+  message.textContent = "";
+  message.className = "message";
+  resultCard.style.display = "none";
+  document.getElementById("copyMessage").textContent = "";
+});
+
+document.getElementById("copyBtn").addEventListener("click", async function () {
+  const lines = [
+    "GraphPro - Ohm's Law Calculator",
+    "Voltage: " + document.getElementById("voltageResult").textContent,
+    "Current: " + document.getElementById("currentResult").textContent,
+    "Resistance: " + document.getElementById("resistanceResult").textContent,
+    "Power: " + document.getElementById("powerResult").textContent,
+    "Formula: " + document.getElementById("formulaResult").textContent
+  ];
+
+  const output = lines.join("\n");
+  const copyMessage = document.getElementById("copyMessage");
+
+  try {
+    await navigator.clipboard.writeText(output);
+    copyMessage.className = "message success";
+    copyMessage.textContent = "Results copied successfully.";
+  } catch (error) {
+    copyMessage.className = "message error";
+    copyMessage.textContent =
+      "Copy was blocked by your browser. You can select and copy the results manually.";
+  }
+});
+</script>
+
+</body>
+</html>
