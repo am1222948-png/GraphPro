@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1120">
+<title>Electrical Power Calculator | GraphPro</title>
+<meta name="description" content="Free Electrical Power Calculator. Calculate watts, kilowatts, energy consumption and estimated electricity cost.">
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;
+ background:#0b1120;color:#e5e7eb;
+ font-family:Arial,sans-serif;
+}
+.container{max-width:650px;margin:auto}
+header{text-align:center;margin:15px 0 25px}
+.logo{font-size:35px}
+h1{color:#60a5fa;margin:8px 0}
+.subtitle{color:#94a3b8;font-size:14px}
+.card{
+ background:#151f33;border:1px solid #263650;
+ border-radius:15px;padding:20px;margin-bottom:18px;
+}
+label{display:block;margin:15px 0 7px;color:#cbd5e1;font-size:14px}
+input{
+ width:100%;padding:13px;border-radius:9px;
+ border:1px solid #34445f;background:#0b1120;
+ color:white;font-size:16px;outline:none;
+}
+input:focus{border-color:#3b82f6}
+button{
+ border:0;border-radius:9px;padding:13px 17px;
+ font-size:15px;font-weight:bold;cursor:pointer;
+}
+.calculate{width:100%;background:#2563eb;color:white;margin-top:20px}
+.clear{background:#334155;color:white}
+.copy{background:#0f766e;color:white;width:100%;margin-top:12px}
+.result{
+ background:#0b1120;border:1px solid #263650;
+ padding:15px;border-radius:10px;margin-top:12px;
+}
+.result strong{display:block;color:#60a5fa;font-size:23px;margin-top:7px}
+.result small{color:#94a3b8}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.formula{color:#cbd5e1;line-height:1.8;font-size:14px}
+.note{font-size:13px;color:#94a3b8;line-height:1.6}
+.actions{display:flex;gap:10px;margin-top:12px}
+.actions button{flex:1}
+a{color:#60a5fa;text-decoration:none}
+footer{text-align:center;color:#64748b;font-size:13px;padding:20px}
+@media(max-width:450px){.grid{grid-template-columns:1fr}.card{padding:15px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+ <div class="logo">⚡</div>
+ <h1>Electrical Power Calculator</h1>
+ <div class="subtitle">Calculate Power, Energy & Electricity Cost</div>
+</header>
+
+<div class="card">
+ <h3>Enter Electrical Values</h3>
+
+ <label for="voltage">Voltage (V)</label>
+ <input id="voltage" type="number" min="0" step="any" placeholder="Example: 230">
+
+ <label for="current">Current (A)</label>
+ <input id="current" type="number" min="0" step="any" placeholder="Example: 5">
+
+ <label for="pf">Power Factor (0 to 1)</label>
+ <input id="pf" type="number" min="0" max="1" step="any" value="1">
+
+ <label for="hours">Usage Time (Hours)</label>
+ <input id="hours" type="number" min="0" step="any" value="1">
+
+ <label for="rate">Electricity Rate (SAR per kWh)</label>
+ <input id="rate" type="number" min="0" step="any" placeholder="Enter your tariff">
+
+ <p class="note">
+ Enter voltage and current to calculate power. Power factor is set to 1 by default.
+ </p>
+
+ <button class="calculate" onclick="calculate()">Calculate Power ⚡</button>
+ <div class="actions">
+  <button class="clear" onclick="clearAll()">Clear</button>
+ </div>
+</div>
+
+<div class="card" id="results" hidden>
+ <h3>Calculation Results</h3>
+
+ <div class="grid">
+  <div class="result">
+   <small>Apparent Power</small>
+   <strong id="va">—</strong>
+  </div>
+  <div class="result">
+   <small>Real Power</small>
+   <strong id="watts">—</strong>
+  </div>
+  <div class="result">
+   <small>Power in Kilowatts</small>
+   <strong id="kw">—</strong>
+  </div>
+  <div class="result">
+   <small>Energy Consumption</small>
+   <strong id="energy">—</strong>
+  </div>
+  <div class="result" style="grid-column:1/-1">
+   <small>Estimated Electricity Cost</small>
+   <strong id="cost">—</strong>
+  </div>
+ </div>
+
+ <h3>Formulas Used</h3>
+ <div class="formula" id="formulaText"></div>
+ <button class="copy" onclick="copyResults()">Copy Results</button>
+</div>
+
+<div class="card">
+ <h3>Electrical Power Formulas</h3>
+ <div class="formula">
+  Apparent Power = Voltage × Current<br>
+  Real Power = Voltage × Current × Power Factor<br>
+  Kilowatts = Watts ÷ 1000<br>
+  Energy (kWh) = Kilowatts × Hours<br>
+  Cost = Energy × Electricity Rate
+ </div>
+ <p class="note">
+ For AC circuits, real power depends on the power factor.
+ This calculator uses the entered voltage and current as RMS values.
+ It is an estimate and does not include additional utility fees or taxes.
+ </p>
+</div>
+
+<footer>
+ <p><a href="./index.html">← Back to GraphPro Home</a></p>
+ GraphPro Calculator © 2026
+</footer>
+
+</div>
+
+<script>
+let lastResult = "";
+
+function numberValue(id){
+ return Number(document.getElementById(id).value);
+}
+
+function calculate(){
+ const voltage = numberValue("voltage");
+ const current = numberValue("current");
+ const pf = numberValue("pf");
+ const hours = numberValue("hours");
+ const rateInput = document.getElementById("rate").value.trim();
+ const rate = rateInput === "" ? null : Number(rateInput);
+
+ if(document.getElementById("voltage").value.trim()==="" ||
+    document.getElementById("current").value.trim()===""){
+  alert("Please enter both Voltage and Current.");
+  return;
+ }
+
+ if(!Number.isFinite(voltage) || voltage<=0 ||
+    !Number.isFinite(current) || current<=0){
+  alert("Voltage and Current must be greater than zero.");
+  return;
+ }
+
+ if(!Number.isFinite(pf) || pf<=0 || pf>1){
+  alert("Power Factor must be greater than 0 and not more than 1.");
+  return;
+ }
+
+ if(!Number.isFinite(hours) || hours<0){
+  alert("Please enter valid usage hours.");
+  return;
+ }
+
+ if(rate!==null && (!Number.isFinite(rate) || rate<0)){
+  alert("Please enter a valid electricity rate.");
+  return;
+ }
+
+ const apparentPower = voltage * current;
+ const realPower = apparentPower * pf;
+ const kw = realPower / 1000;
+ const energy = kw * hours;
+ const cost = rate===null ? null : energy * rate;
+
+ document.getElementById("va").textContent =
+  apparentPower.toFixed(2) + " VA";
+
+ document.getElementById("watts").textContent =
+  realPower.toFixed(2) + " W";
+
+ document.getElementById("kw").textContent =
+  kw.toFixed(4) + " kW";
+
+ document.getElementById("energy").textContent =
+  energy.toFixed(4) + " kWh";
+
+ document.getElementById("cost").textContent =
+  cost===null ? "Enter rate to calculate" : cost.toFixed(2) + " SAR";
+
+ document.getElementById("formulaText").innerHTML =
+  "Apparent Power = " + voltage + " × " + current +
+  " = " + apparentPower.toFixed(2) + " VA<br>" +
+  "Real Power = " + voltage + " × " + current + " × " + pf +
+  " = " + realPower.toFixed(2) + " W<br>" +
+  "Energy = " + kw.toFixed(4) + " × " + hours +
+  " = " + energy.toFixed(4) + " kWh" +
+  (rate===null ? "" :
+  "<br>Cost = " + energy.toFixed(4) + " × " + rate +
+  " = " + cost.toFixed(2) + " SAR");
+
+ lastResult =
+  "GraphPro Electrical Power Calculator\n" +
+  "Voltage: " + voltage + " V\n" +
+  "Current: " + current + " A\n" +
+  "Power Factor: " + pf + "\n" +
+  "Apparent Power: " + apparentPower.toFixed(2) + " VA\n" +
+  "Real Power: " + realPower.toFixed(2) + " W\n" +
+  "Power: " + kw.toFixed(4) + " kW\n" +
+  "Energy: " + energy.toFixed(4) + " kWh\n" +
+  "Estimated Cost: " +
+  (cost===null ? "Rate not entered" : cost.toFixed(2) + " SAR");
+
+ document.getElementById("results").hidden = false;
+}
+
+function clearAll(){
+ ["voltage","current","hours","rate"].forEach(id=>{
+  document.getElementById(id).value="";
+ });
+ document.getElementById("pf").value="1";
+ document.getElementById("results").hidden=true;
+ lastResult="";
+}
+
+async function copyResults(){
+ if(!lastResult)return;
+ try{
+  await navigator.clipboard.writeText(lastResult);
+  alert("Results copied successfully!");
+ }catch(e){
+  alert("Copy is not supported in this browser.");
+ }
+}
+</script>
+</body>
+</html>
