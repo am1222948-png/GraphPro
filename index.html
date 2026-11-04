@@ -313,7 +313,7 @@ footer{text-align:center;color:#8493b2;padding:28px 16px 35px;font-size:12px}
   <label class="tool-search-label" for="toolSearch">Search all tools</label>
   <input id="toolSearch" type="search" placeholder="Try: matrix, roots, percentage..." autocomplete="off" aria-label="Search all GraphPro tools">
   <div id="toolSearchResults" hidden></div>
-  <p id="toolSearchStatus" aria-live="polite">11 tools available to search.</p>
+  <p id="toolSearchStatus" aria-live="polite">12 tools available to search.</p>
 </nav>
 
 <section class="extra" aria-labelledby="aboutGraphPro">
@@ -2234,7 +2234,13 @@ function calculateThirdDerivative() {
     { name: "Matrix Calculator", target: "matrixCalculator", icon: "▦", keywords: "matrix addition subtraction multiplication determinant inverse" },
     { name: "Derivative Calculator", target: "derivativeCalculator", icon: "∂", keywords: "derivative first second third calculus" },
     { name: "Calculation History", target: "historySection", icon: "🕘", keywords: "history previous calculations answers" },
-{ name: "Ohm's Law Calculator", target: "electrical-ohms-law.html", icon: "⚡", keywords: "electrical ohms law voltage current resistance power volts amps watts" }
+{ name: "Ohm's Law Calculator", target: "electrical-ohms-law.html", icon: "⚡", keywords: "electrical ohms law voltage current resistance power volts amps watts" },
+    {
+  name: "Electrical Power Calculator",
+  target: "electrical-power.html",
+  icon: "⚡",
+  keywords: "electrical power watts kilowatts energy consumption electricity bill cost kwh"
+},
   ];
 
   const search = document.getElementById("toolSearch");
